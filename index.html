@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kızma Birader PRO</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Arial', sans-serif; }
+        body { background: #222; color: #fff; text-align: center; padding: 10px; }
+        h1 { margin-bottom: 10px; color: #f1c40f; font-size: 24px; }
+        
+        /* Ayarlar Menüsü */
+        #settings-menu { background: #333; padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 2px solid #555; }
+        .setup-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; background: #444; padding: 8px; border-radius: 5px; }
+        .setup-row.p1 { border-left: 5px solid #e74c3c; } /* Kırmızı */
+        .setup-row.p2 { border-left: 5px solid #3498db; } /* Mavi */
+        .setup-row.p3 { border-left: 5px solid #2ecc71; } /* Yeşil */
+        .setup-row.p4 { border-left: 5px solid #f1c40f; } /* Sarı */
+        
+        input[type="text"] { padding: 5px; width: 120px; border-radius: 3px; border: none; }
+        .btn { background: #27ae60; color: white; border: none; padding: 10px 20px; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer; margin-top: 10px; width: 100%; }
+        .btn:hover { background: #219653; }
+        
+        /* Oyun Alanı */
+        #game-container { display: none; }
+        #status-bar { background: #444; padding: 10px; border-radius: 5px; margin-bottom: 10px; font-size: 16px; font-weight: bold; }
+        
+        /* Basit Temsili Tahta */
+        #board-preview { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 400px; margin: 20px auto; }
+        .player-zone { padding: 15px; border-radius: 8px; font-weight: bold; text-shadow: 1px 1px 2px #000; }
+        .zone-red { background: #e74c3c; }
+        .zone-blue { background: #3498db; }
+        .zone-green { background: #2ecc71; }
+        .zone-yellow { background: #f1c40f; }
+        
+        /* Zar Alanı */
+        #dice-area { margin: 20px 0; }
+        #dice-btn { background: #e67e22; color: white; font-size: 18px; padding: 12px 25px; border: none; border-radius: 5px; cursor: pointer; }
+        #dice-result { font-size: 28px; margin-top: 10px; font-weight: bold; color: #f1c40f; }
+        
+        .active-turn { animation: pulse 1s infinite alternate; border: 3px solid #fff; }
+        @keyframes pulse { from { opacity: 0.6; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <h1>Kızma Birader PRO</h1>
+
+    <!-- AYARLAR MENÜSÜ -->
+    <div id="settings-menu">
+        <h3 style="margin-bottom: 12px; color: #f1c40f;">Oyuncu Ayarları</h3>
+        
+        <!-- En az 2 oyuncu zorunlu olduğu için ilk 2 takım aktif -->
+        <!-- Takım 1: Kırmızı -->
+        <div class="setup-row p1">
+            <span style="color: #e74c3c; font-weight: bold;">1. Takım (Kırmızı):</span>
+            <input type="text" id="p1-name" placeholder="Yusuf">
+            <label><input type="checkbox" id="p1-bot"> Bot yap</label>
+        </div>
+
+        <!-- Takım 2: Mavi -->
+        <div class="setup-row p2">
+            <span style="color: #3498db; font-weight: bold;">2. Takım (Mavi):</span>
+            <input type="text" id="p2-name" placeholder="Player 2">
+            <label><input type="checkbox" id="p2-bot"> Bot yap</label>
+        </div>
+
+        <!-- Takım 3: Yeşil (İsteğe Bağlı) -->
+        <div class="setup-row p3">
+            <label><input type="checkbox" id="p3-active" onchange="togglePlayer(3)"> 3. Takımı Aç (Yeşil)</label>
+            <div id="p3-inputs" style="display: none; align-items: center; gap: 5px; margin-top: 5px;">
+                <input type="text" id="p3-name" placeholder="Player 3">
+                <label><input type="checkbox" id="p3-bot"> Bot yap</label>
+            </div>
+        </div>
+
+        <!-- Takım 4: Sarı (İsteğe Bağlı) -->
+        <div class="setup-row p4">
+            <label><input type="checkbox" id="p4-active" onchange="togglePlayer(4)"> 4. Takımı Aç (Sarı)</label>
+            <div id="p4-inputs" style="display: none; align-items: center; gap: 5px; margin-top: 5px;">
+                <input type="text" id="p4-name" placeholder="Player 4">
+                <label><input type="checkbox" id="p4-bot"> Bot yap</label>
+            </div>
+        </div>
+
+        <!-- NOT: İstek üzerine Geri Al (Undo) butonu buradan tamamen kaldırılmıştır. -->
+        <button class="btn" onclick="startGame()">Oyunu Başlat</button>
+    </div>
+
+    <!-- OYUN ALANI -->
+    <div id="game-container">
+        <div id="status-bar">Sıra Kimde?</div>
+        
+        <div id="board-preview">
+            <div id="zone-1" class="player-zone zone-red">Kırmızı</div>
+            <div id="zone-2" class="player-zone zone-blue">Mavi</div>
+            <div id="zone-3" class="player-zone zone-green" style="display: none;">Yeşil</div>
+            <div id="zone-4" class="player-zone zone-yellow" style="display: none;">Sarı</div>
+        </div>
+
+        <div id="dice-area">
+            <button id="dice-btn" onclick="rollDice()">Zar At 🎲</button>
+            <div id="dice-result">-</div>
+        </div>
+    </div>
+
+    <!-- SES EFEKTLERİ (Kızma Birader Konsepti) -->
+    <audio id="sound-dice" src="https://assets.mixkit.co/active_storage/sfx/2014/2014-84.wav"></audio>
+    <audio id="sound-eat" src="https://assets.mixkit.co/active_storage/sfx/2511/2511-84.wav"></audio> <!-- Piyon Yeme Sesi -->
+    <audio id="sound-home" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-84.wav"></audio> <!-- Yuvaya Giriş Sesi -->
+
+    <script>
+        let players = [];
+        let activePlayerIndex = 0;
+        let totalPlayers = 2;
+
+        // 3. ve 4. oyuncu kutularını açıp kapatma fonksiyonu
+        function togglePlayer(num) {
+            const isActive = document.getElementById(`p${num}-active`).checked;
+            document.getElementById(`p${num}-inputs`).style.display = isActive ? 'flex' : 'none';
+        }
+
+        // Oyunu Başlatma Ayarları
+        function startGame() {
+            players = [];
+            totalPlayers = 2;
+
+            // 1. Oyuncu (Kırmızı) Kontrolü
+            let p1Name = document.getElementById('p1-name').value.trim();
+            if(!p1Name) p1Name = "player1"; // Boş bırakılırsa varsayılan
+            players.push({ name: p1Name, color: 'Kırmızı', colorCode: '#e74c3c', isBot: document.getElementById('p1-bot').checked, id: 1 });
+
+            // 2. Oyuncu (Mavi) Kontrolü
+            let p2Name = document.getElementById('p2-name').value.trim();
+            if(!p2Name) p2Name = "player2";
+            players.push({ name: p2Name, color: 'Mavi', colorCode: '#3498db', isBot: document.getElementById('p2-bot').checked, id: 2 });
+
+            // 3. Oyuncu (Yeşil) Kontrolü
+            if(document.getElementById('p3-active').checked) {
+                let p3Name = document.getElementById('p3-name').value.trim();
+                if(!p3Name) p3Name = "player3";
+                players.push({ name: p3Name, color: 'Yeşil', colorCode: '#2ecc71', isBot: document.getElementById('p3-bot').checked, id: 3 });
+                document.getElementById('zone-3').style.display = 'block';
+                totalPlayers++;
+            } else {
+                document.getElementById('zone-3').style.display = 'none';
+            }
+
+            // 4. Oyuncu (Sarı) Kontrolü
+            if(document.getElementById('p4-active').checked) {
+                let p4Name = document.getElementById('p4-name').value.trim();
+                if(!p4Name) p4Name = "palyer4"; // İstediğin gibi imlasıyla "palyer4" yapıldı
+                players.push({ name: p4Name, color: 'Sarı', colorCode: '#f1c40f', isBot: document.getElementById('p4-bot').checked, id: 4 });
+                document.getElementById('zone-4').style.display = 'block';
+                totalPlayers++;
+            } else {
+                document.getElementById('zone-4').style.display = 'none';
+            }
+
+            // Ekranları Güncelle
+            document.getElementById('settings-menu').style.display = 'none';
+            document.getElementById('game-container').style.display = 'block';
+
+            // İsimleri Tahtadaki Kartlara Yaz
+            players.forEach(p => {
+                const zone = document.getElementById(`zone-${p.id}`);
+                zone.innerHTML = `${p.name} <br> <span style="font-size:12px;">(${p.isBot ? 'BOT' : 'İNSAN'})</span>`;
+            });
+
+            activePlayerIndex = 0;
+            updateTurnStatus();
+        }
+
+        // Sıra durumunu güncelleyen ve Bot kontrolünü yapan fonksiyon
+        function updateTurnStatus() {
+            const currentPlayer = players[activePlayerIndex];
+            const statusBar = document.getElementById('status-bar');
+            
+            statusBar.innerHTML = `Sıra: <span style="color:${currentPlayer.colorCode}">${currentPlayer.name}</span> (${currentPlayer.color}) ekibinde!`;
+
+            // Aktif takımın tahtadaki yerini parlat
+            for(let i = 1; i <= 4; i++) {
+                const zone = document.getElementById(`zone-${i}`);
+                if(zone) zone.classList.remove('active-turn');
+            }
+            document.getElementById(`zone-${currentPlayer.id}`).classList.add('active-turn');
+
+            // Eğer sıradaki oyuncu BOT ise otomatik zar attır
+            if(currentPlayer.isBot) {
+                document.getElementById('dice-btn').disabled = true;
+                statusBar.innerHTML += " [BOT DÜŞÜNÜYOR...]";
+                setTimeout(() => {
+                    rollDice();
+                }, 1500); // Bot 1.5 saniye sonra zar atar
+            } else {
+                document.getElementById('dice-btn').disabled = false;
+            }
+        }
+
+        // Zar Atma ve Kızma Birader Mekanikleri (Sesler Dahil)
+        function rollDice() {
+            // Zar Sesi Oynat
+            document.getElementById('sound-dice').play();
+
+            const diceValue = Math.floor(Math.random() * 6) + 1;
+            document.getElementById('dice-result').innerText = `🎲 ${diceValue}`;
+
+            // --- Kızma Birader Olay Algoritmaları Temsili Tetikleyicileri ---
+            // Şans eseri piyon yeme veya yuvaya giriş simülasyonu (Ses testleri için)
+            const randomEvent = Math.random();
+            if(randomEvent < 0.15) {
+                // %15 ihtimalle piyon yeme sesi tetiklensin
+                setTimeout(() => {
+                    document.getElementById('sound-eat').play();
+                    alert(`Olamaz! Bir piyon YENDİ! 🎯`);
+                }, 500);
+            } else if(randomEvent > 0.85) {
+                // %15 ihtimalle yuvaya güvenli giriş sesi tetiklensin
+                setTimeout(() => {
+                    document.getElementById('sound-home').play();
+                    alert(`Tebrikler! Piyon YUVAYA girdi! 🏁`);
+                }, 500);
+            }
+
+            // Sırayı sonraki oyuncuya geçir
+            setTimeout(() => {
+                activePlayerIndex = (activePlayerIndex + 1) % players.length;
+                updateTurnStatus();
+            }, 1200);
+        }
+    </script>
+</body>
+</html>
+

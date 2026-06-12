@@ -9,13 +9,13 @@
         body { background: #1a1a1a; color: #fff; text-align: center; padding: 5px; }
         h1 { font-size: 22px; color: #f1c40f; margin: 5px 0; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
 
-        /* GİRİŞ VE AYARLAR MENÜSÜ */
+        /* GİRİŞ MENÜSÜ */
         #settings-menu { background: #2c3e50; padding: 15px; border-radius: 12px; max-width: 440px; margin: 10px auto; border: 2px solid #34495e; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
         .menu-title { color: #f1c40f; margin-bottom: 12px; font-size: 18px; }
         .setup-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; padding: 10px; border-radius: 8px; font-weight: bold; text-align: left; }
         .p1 { background: #c0392b; border-left: 6px solid #ff4d4d; }
-        .p2 { background: #2980b9; border-left: 6px solid #3399ff; }
-        .p3 { background: #27ae60; border-left: 6px solid #2ecc71; }
+        .p2 { background: #27ae60; border-left: 6px solid #2ecc71; }
+        .p3 { background: #2980b9; border-left: 6px solid #3399ff; }
         .p4 { background: #d35400; border-left: 6px solid #f1c40f; }
         
         .inputs-container { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 4px; }
@@ -31,7 +31,7 @@
         #status-bar { background: #2c3e50; padding: 10px; border-radius: 6px; margin-bottom: 8px; font-weight: bold; font-size: 14px; border: 1px solid #34495e; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); display: flex; justify-content: space-between; align-items: center; }
         .timer-badge { background: #e74c3c; color: white; padding: 2px 8px; border-radius: 4px; font-size: 13px; font-family: monospace; }
 
-        /* PRO PROFİL PANELLERİ */
+        /* PROFİL PANELLERİ */
         .player-profile-card {
             position: absolute;
             background: rgba(44, 62, 80, 0.95);
@@ -59,15 +59,7 @@
             border-radius: 6px;
             border: 1px solid #fff;
         }
-        .profile-info {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            width: 100%;
-        }
+        .profile-info { display: flex; flex-direction: column; align-items: flex-start; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; width: 100%; }
         .profile-pawn-preview { font-size: 10px; opacity: 0.8; }
 
         .card-red    { top: -45px; left: 0; border-color: #ff4d4d; }
@@ -75,7 +67,7 @@
         .card-blue   { bottom: -50px; left: 0; border-color: #3399ff; }
         .card-yellow { bottom: -50px; right: 0; border-color: #f1c40f; }
 
-        /* HARİTA KUTUSU VE TAHTA */
+        /* TAHTA */
         .board-wrapper { position: relative; margin-top: 50px; margin-bottom: 55px; }
         #ludo-board { 
             display: grid; 
@@ -93,41 +85,41 @@
         .cell { background: #ffffff; border: 1px solid #bdc3c7; display: flex; justify-content: center; align-items: center; position: relative; }
         
         .c-red { background: #ff4d4d !important; }
-        .c-blue { background: #3399ff !important; }
         .c-green { background: #2ecc71 !important; }
+        .c-blue { background: #3399ff !important; }
         .c-yellow { background: #f1c40f !important; }
         .c-white { background: #ffffff !important; }
 
+        /* YILDIZ TASARIMI */
         .star-cell::before {
             content: "★";
-            font-size: 16px;
+            font-size: 15px;
             color: #7f8c8d;
             position: absolute;
             font-weight: bold;
+            z-index: 2;
         }
-        .star-red::before { color: #fff !important; }
-        .star-green::before { color: #fff !important; }
-        .star-yellow::before { color: #fff !important; }
-        .star-blue::before { color: #fff !important; }
+        .star-red::before, .star-green::before, .star-blue::before, .star-yellow::before { color: #fff !important; }
 
         .nest { grid-column: span 6; grid-row: span 6; display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 12px; padding: 14px; position: relative; }
-        .nest-red { background: #ff4d4d; }
-        .nest-green { background: #2ecc71; }
-        .nest-blue { background: #3399ff; }
-        .nest-yellow { background: #f1c40f; }
+        .nest-red { background: #ff4d4d; border-right: 2px solid #fff; border-bottom: 2px solid #fff; }
+        .nest-green { background: #2ecc71; border-left: 2px solid #fff; border-bottom: 2px solid #fff; }
+        .nest-blue { background: #3399ff; border-right: 2px solid #fff; border-top: 2px solid #fff; }
+        .nest-yellow { background: #f1c40f; border-left: 2px solid #fff; border-top: 2px solid #fff; }
         
         .pocket { background: #fff; border-radius: 50%; border: 2px solid #333; display: flex; justify-content: center; align-items: center; box-shadow: inset 0 2px 5px rgba(0,0,0,0.3); position: relative; width: 100%; height: 100%; }
 
-        .center-triangle-container { grid-column: span 3; grid-row: span 3; position: relative; background: #fff; border: 1px solid #bdc3c7; }
+        /* MERKEZ ÜÇGENLER */
+        .center-triangle-container { grid-column: span 3; grid-row: span 3; position: relative; background: #fff; }
         .triangle-svg { width: 100%; height: 100%; position: absolute; top:0; left:0; }
 
         .home-target-zone { position: absolute; width: 30%; height: 30%; display: flex; justify-content: center; align-items: center; z-index: 5; }
         .target-red { left: 5%; top: 35%; }
         .target-green { left: 35%; top: 5%; }
-        .target-yellow { right: 5%; top: 35%; }
         .target-blue { left: 35%; bottom: 5%; }
+        .target-yellow { right: 5%; top: 35%; }
 
-        /* Piyonlar */
+        /* PİYONLAR */
         .pawn {
             width: 80% !important;
             height: 80% !important;
@@ -144,19 +136,19 @@
             color: #fff;
             text-shadow: 0 1px 2px rgba(0,0,0,0.8);
             font-weight: bold;
-            transition: transform 0.15s ease, width 0.15s ease, height 0.15s ease;
+            transition: transform 0.15s ease;
         }
         .pawn.movable { animation: bounce 0.4s infinite alternate; box-shadow: 0 0 10px #fff; z-index: 30; }
         
         .pawn-red { background: #c0392b; }
-        .pawn-blue { background: #2980b9; }
         .pawn-green { background: #27ae60; }
+        .pawn-blue { background: #2980b9; }
         .pawn-yellow { background: #d35400; }
 
         @keyframes bounce { from { transform: scale(1); } to { transform: scale(1.15); } }
 
-        /* ALT KONTROL PANELİ */
-        #control-panel { display: flex; justify-content: space-between; align-items: center; background: #2c3e50; padding: 10px; border-radius: 8px; border: 1px solid #34495e; position: relative; gap: 5px; }
+        /* KONTROL PANELİ */
+        #control-panel { display: flex; justify-content: space-between; align-items: center; background: #2c3e50; padding: 10px; border-radius: 8px; border: 1px solid #34495e; gap: 5px; }
         #dice-btn { background: #e67e22; color: white; border: none; padding: 10px 12px; font-size: 15px; font-weight: bold; border-radius: 5px; cursor: pointer; box-shadow: 0 3px 0 #d35400; width: 30%; }
         #dice-btn:disabled { background: #7f8c8d; box-shadow: none; cursor: not-allowed; }
         #dice-result-box { width: 35%; display: flex; justify-content: center; align-items: center; font-size: 14px; font-weight: bold; }
@@ -173,70 +165,38 @@
             font-size: 24px; 
             color: #000; 
             box-shadow: 0 3px 5px rgba(0,0,0,0.3); 
-            transition: transform 0.4s ease;
         }
         .dice-rolling { animation: rollAnim 0.4s linear infinite; }
         @keyframes rollAnim {
-            0% { transform: rotate(0deg) scale(0.9); background: #eee; }
-            50% { transform: rotate(180deg) scale(1.1); background: #ddd; }
-            100% { transform: rotate(360deg) scale(0.9); background: #eee; }
+            0% { transform: rotate(0deg) scale(0.9); }
+            50% { transform: rotate(180deg) scale(1.1); }
+            100% { transform: rotate(360deg) scale(0.9); }
         }
 
         #dice-pool-view { font-size: 11px; color: #f1c40f; margin-top: 3px; display: block; width: 100%; text-align: left; font-family: monospace; }
-
         .action-btn-group { display: flex; gap: 4px; width: 35%; justify-content: flex-end; }
-        .nav-icon-btn { background: #34495e; border: none; color: white; font-size: 16px; padding: 8px 10px; border-radius: 4px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; }
-        .nav-icon-btn:active { transform: translateY(1px); }
+        .nav-icon-btn { background: #34495e; border: none; color: white; font-size: 16px; padding: 8px 10px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
-        /* PARŞÖMEN AYARLAR POPUP */
+        /* POPUP MENÜLER */
         #settings-popup-parchment {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #f4e4c1; 
-            color: #4a3319;
-            border: 4px solid #8b5a2b;
-            padding: 18px;
-            border-radius: 10px;
-            z-index: 1001;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-            width: 290px;
-            text-align: left;
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: #f4e4c1; color: #4a3319; border: 4px solid #8b5a2b; padding: 18px; border-radius: 10px; z-index: 1001; box-shadow: 0 10px 30px rgba(0,0,0,0.8); width: 290px; text-align: left;
         }
-        #settings-popup-parchment h3 { font-size: 18px; border-bottom: 2px solid #8b5a2b; padding-bottom: 5px; margin-bottom: 12px; font-weight: bold; }
-        .setting-item { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-weight: bold; font-size: 14px; cursor: pointer; }
-        .setting-item input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; accent-color: #8b5a2b; }
-        .parchment-close-btn { background: #8b5a2b; color: white; border: none; padding: 8px; width: 100%; font-size: 14px; font-weight: bold; border-radius: 4px; cursor: pointer; margin-top: 5px; text-align: center;}
+        .setting-item { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-weight: bold; font-size: 14px; }
+        .parchment-close-btn { background: #8b5a2b; color: white; border: none; padding: 8px; width: 100%; font-size: 14px; font-weight: bold; border-radius: 4px; cursor: pointer; margin-top: 5px; }
 
-        /* ANA MENÜ POPUP */
         #mainmenu-popup-box { 
-            display: none; 
-            position: fixed; 
-            top: 50%; 
-            left: 50%; 
-            transform: translate(-50%, -50%); 
-            background: #e9d5a1; 
-            border: 4px solid #613c18; 
-            padding: 22px; 
-            border-radius: 16px; 
-            z-index: 1000; 
-            box-shadow: 0 12px 35px rgba(0,0,0,0.8);
-            width: 280px;
-            text-align: center;
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+            background: #e9d5a1; border: 4px solid #613c18; padding: 22px; border-radius: 16px; z-index: 1000; box-shadow: 0 12px 35px rgba(0,0,0,0.8); width: 280px; text-align: center;
         }
         .menu-popup-title { color: #3d220a; font-size: 20px; font-weight: bold; margin-bottom: 15px; border-bottom: 2px solid #bfa072; padding-bottom: 6px; }
-        .wood-btn { background: #5a3818; color: #fff; border: 2px solid #3d220a; padding: 11px; width: 100%; font-size: 16px; font-weight: bold; border-radius: 8px; margin-bottom: 12px; cursor: pointer; box-shadow: 0 3px 0 #2a1807; }
-        .wood-btn:active { transform: translateY(2px); box-shadow: none; }
-        .wood-btn.red-wood { background: #922b21; box-shadow: 0 3px 0 #5c1a13; border-color: #5c1a13; }
+        .wood-btn { background: #5a3818; color: #fff; border: 2px solid #3d220a; padding: 11px; width: 100%; font-size: 16px; font-weight: bold; border-radius: 8px; margin-bottom: 12px; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <h1>Kızma Birader PRO</h1>
 
-    <!-- AYARLAR EKRANI -->
     <div id="settings-menu">
         <h3 class="menu-title">⚙️ Oyuncu & Taş Ayarları</h3>
         
@@ -249,39 +209,31 @@
                     <option value="👑">Taç (👑)</option>
                     <option value="😎">Gözlük (😎)</option>
                     <option value="⚙️">Çark (⚙️)</option>
-                    <option value="💀">Kafatası (💀)</option>
                 </select>
                 <label class="bot-lbl"><input type="checkbox" id="p1-bot"> Bot</label>
             </div>
         </div>
 
-        <div class="setup-row p3">
+        <div class="setup-row p2">
             <span>2. Takım (Yeşil - Sağ Üst):</span>
             <div class="inputs-container">
-                <input type="text" id="p3-name" value="Player 2">
-                <select id="p3-shape">
-                    <option value="•">Standart (•)</option>
-                    <option value="👑">Taç (👑)</option>
-                    <option value="😎">Gözlük (😎)</option>
-                    <option value="⚙️">Çark (⚙️)</option>
-                    <option value="💀">Kafatası (💀)</option>
-                </select>
-                <label class="bot-lbl"><input type="checkbox" id="p3-bot"> Bot</label>
-            </div>
-        </div>
-
-        <div class="setup-row p2">
-            <label style="cursor:pointer;"><input type="checkbox" id="p2-active" checked onchange="managePlayerRow(2)"> 3. Takımı Aç (Mavi - Sol Alt)</label>
-            <div id="p2-inputs" class="inputs-container">
-                <input type="text" id="p2-name" value="Player 3">
+                <input type="text" id="p2-name" value="Player 2">
                 <select id="p2-shape">
                     <option value="•">Standart (•)</option>
                     <option value="👑">Taç (👑)</option>
-                    <option value="😎">Gözlük (😎)</option>
-                    <option value="⚙️">Çark (⚙️)</option>
-                    <option value="💀">Kafatası (💀)</option>
                 </select>
                 <label class="bot-lbl"><input type="checkbox" id="p2-bot"> Bot</label>
+            </div>
+        </div>
+
+        <div class="setup-row p3">
+            <label style="cursor:pointer;"><input type="checkbox" id="p3-active" checked onchange="managePlayerRow(3)"> 3. Takımı Aç (Mavi - Sol Alt)</label>
+            <div id="p3-inputs" class="inputs-container">
+                <input type="text" id="p3-name" value="Player 3">
+                <select id="p3-shape">
+                    <option value="•">Standart (•)</option>
+                </select>
+                <label class="bot-lbl"><input type="checkbox" id="p3-bot"> Bot</label>
             </div>
         </div>
 
@@ -291,10 +243,6 @@
                 <input type="text" id="p4-name" value="Player 4">
                 <select id="p4-shape">
                     <option value="•">Standart (•)</option>
-                    <option value="👑">Taç (👑)</option>
-                    <option value="😎">Gözlük (😎)</option>
-                    <option value="⚙️">Çark (⚙️)</option>
-                    <option value="💀">Kafatası (💀)</option>
                 </select>
                 <label class="bot-lbl"><input type="checkbox" id="p4-bot"> Bot</label>
             </div>
@@ -303,7 +251,6 @@
         <button class="btn-start" onclick="initLudoGame()">Oyunu Başlat 🚀</button>
     </div>
 
-    <!-- OYUN ALANI -->
     <div id="game-container">
         <div id="status-bar">
             <span id="turn-text">Sıra Kimde?</span>
@@ -311,7 +258,6 @@
         </div>
         
         <div class="board-wrapper">
-            <!-- Profil Kartları -->
             <div class="player-profile-card card-red" id="profile-red" style="display:none;">
                 <div class="profile-avatar">👤</div>
                 <div class="profile-info"><span id="lbl-red-name">-</span><span class="profile-pawn-preview" id="lbl-red-shape">-</span></div>
@@ -345,14 +291,13 @@
             </div>
             
             <div class="action-btn-group">
-                <button class="nav-icon-btn" onclick="handleNewGame()" title="Yeni Oyun">▶️</button>
-                <button class="nav-icon-btn" onclick="toggleParchmentPopup(true)" title="Ayarlar">⚙️</button>
-                <button class="nav-icon-btn" onclick="toggleMainMenuPopup(true)" title="Menü">☰</button>
+                <button class="nav-icon-btn" onclick="handleNewGame()">▶️</button>
+                <button class="nav-icon-btn" onclick="toggleParchmentPopup(true)">⚙️</button>
+                <button class="nav-icon-btn" onclick="toggleMainMenuPopup(true)">☰</button>
             </div>
         </div>
     </div>
 
-    <!-- AYARLAR PENCERESİ -->
     <div id="settings-popup-parchment">
         <h3>Ayarlar</h3>
         <label class="setting-item">
@@ -361,99 +306,115 @@
         <label class="setting-item">
             <input type="checkbox" id="chk-play-sounds" checked> Sesleri çal
         </label>
-        <label class="setting-item">
-            <input type="checkbox" id="chk-parental"> Ebeveyn kontrolü
-        </label>
-        <label class="setting-item">
-            <input type="checkbox" id="chk-fullscreen"> Tam ekran
-        </label>
         <button class="parchment-close-btn" onclick="toggleParchmentPopup(false)">Tamam</button>
     </div>
 
-    <!-- ANA MENÜ POPUP KUTUSU -->
     <div id="mainmenu-popup-box">
         <div class="menu-popup-title">Ana Menü</div>
         <button class="wood-btn" onclick="toggleMainMenuPopup(false)">Oyuna Dön</button>
-        <button class="wood-btn red-wood" onclick="handleMainMenu()">Sayfayı Yenile</button>
+        <button class="wood-btn" onclick="handleMainMenu()">Yeniden Başlat</button>
     </div>
 
-    <!-- SES DOSYALARI (Gelişmiş Web Audio Api Uyumlu Yedekli Linkler) -->
-    <audio id="sound-dice" src="https://assets.mixkit.co/active_storage/sfx/2014/2014-84.wav" preload="auto" crossorigin="anonymous"></audio>
-    <audio id="sound-eat" src="https://assets.mixkit.co/active_storage/sfx/2511/2511-84.wav" preload="auto" crossorigin="anonymous"></audio> 
-    <audio id="sound-home" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-84.wav" preload="auto" crossorigin="anonymous"></audio>
-    <audio id="sound-victory" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-84.wav" preload="auto" crossorigin="anonymous"></audio>
-
     <script>
+        let audioCtx = null;
         let players = [];
         let activeTurnIndex = 0;
         let dicePool = []; 
         let rollDone = false;
         let consecutiveSixes = 0; 
-        
         let turnTimeLeft = 10;
         let turnTimerInterval = null;
         let isWaitingForPawnSelection = false;
-        let audioContextUnlocked = false;
 
-        // Görsele (1000191185.jpg) göre tam senkronize edilmiş 52 karelik pist koordinatları
+        // GÖRSELDEKİ SAAT YÖNÜNDEKİ 52 KARELİK PİST DİZİLİMİ
         const trackCoordinates = [
-            {r:6, c:1}, {r:6, c:2}, {r:6, c:3}, {r:6, c:4}, {r:6, c:5},
-            {r:5, c:6}, {r:4, c:6}, {r:3, c:6}, {r:2, c:6}, {r:1, c:6}, {r:0, c:6},
-            {r:0, c:7},
-            {r:0, c:8}, {r:1, c:8}, {r:2, c:8}, {r:3, c:8}, {r:4, c:8}, {r:5, c:8},
-            {r:6, c:9}, {r:6, c:10}, {r:6, c:11}, {r:6, c:12}, {r:6, c:13}, {r:6, c:14},
-            {r:7, c:14},
-            {r:8, c:14}, {r:8, c:13}, {r:8, c:12}, {r:8, c:11}, {r:8, c:10}, {r:8, c:9},
-            {r:9, c:8}, {r:10, c:8}, {r:11, c:8}, {r:12, c:8}, {r:13, c:8}, {r:14, c:8},
-            {r:14, c:7},
-            {r:14, c:6}, {r:13, c:6}, {r:12, c:6}, {r:11, c:6}, {r:10, c:6}, {r:9, c:6},
-            {r:8, c:5}, {r:8, c:4}, {r:8, c:3}, {r:8, c:2}, {r:8, c:1}, {r:8, c:0},
-            {r:7, c:0}, {r:6, c:0}
+            {r:6, c:0},  {r:6, c:1},  {r:6, c:2},  {r:6, c:3},  {r:6, c:4},  {r:6, c:5},  // Sol kol üst (0-5)
+            {r:5, c:6},  {r:4, c:6},  {r:3, c:6},  {r:2, c:6},  {r:1, c:6},  {r:0, c:6},  // Üst sütun sol (6-11)
+            {r:0, c:7},                                                                     // En üst orta geçiş (12)
+            {r:0, c:8},  {r:1, c:8},  {r:2, c:8},  {r:3, c:8},  {r:4, c:8},  {r:5, c:8},  // Üst sütun sağ (13-18)
+            {r:6, c:9},  {r:6, c:10}, {r:6, c:11}, {r:6, c:12}, {r:6, c:13}, {r:6, c:14}, // Sağ kol üst (19-24)
+            {r:7, c:14},                                                                    // En sağ orta geçiş (25)
+            {r:8, c:14}, {r:8, c:13}, {r:8, c:12}, {r:8, c:11}, {r:8, c:10}, {r:8, c:9},  // Sağ kol alt (26-31)
+            {r:9, c:8},  {r:10, c:8}, {r:11, c:8}, {r:12, c:8}, {r:13, c:8}, {r:14, c:8}, // Alt sütun sağ (32-37)
+            {r:14, c:7},                                                                    // En alt orta geçiş (38)
+            {r:14, c:6}, {r:13, c:6}, {r:12, c:6}, {r:11, c:6}, {r:10, c:6}, {r:9, c:6},  // Alt sütun sol (39-44)
+            {r:8, c:5},  {r:8, c:4},  {r:8, c:3},  {r:8, c:2},  {r:8, c:1},  {r:8, c:0},  // Sol kol alt (45-50)
+            {r:7, c:0}                                                                      // En sol orta geçiş (51)
         ];
 
-        // GÖRSELDEKİ BİREBİR DOĞRU YILDIZLI BAŞLANGIÇ NOKTALARI (Kırmızı=0, Yeşil=12, Sarı=26, Mavi=38)
+        // %100 GERÇEK ÇIKMA NOKTALARI: EVDEN ÇIKINCA DİREKT RENKLİ YILDIZIN ÜSTÜNE GELİR
         const teamConfigs = {
-            'red':    { startTrackIdx: 0,  colorClass: 'c-red',    startR: 6, startC: 1 },
-            'green':  { startTrackIdx: 12, colorClass: 'c-green',  startR: 0, startC: 8 },
-            'yellow': { startTrackIdx: 26, colorClass: 'c-yellow', startR: 8, startC: 13 }, 
-            'blue':   { startTrackIdx: 38, colorClass: 'c-blue',   startR: 14, startC: 6 }  
+            'red':    { startTrackIdx: 1,  colorClass: 'c-red',    startR: 6, startC: 1 },  // Kırmızı Yıldızlı Kare (1. İndeks)
+            'green':  { startTrackIdx: 14, colorClass: 'c-green',  startR: 1, startC: 8 },  // Yeşil Yıldızlı Kare (14. İndeks)
+            'yellow': { startTrackIdx: 27, colorClass: 'c-yellow', startR: 8, startC: 13 }, // Sarı Yıldızlı Kare (27. İndeks)
+            'blue':   { startTrackIdx: 40, colorClass: 'c-blue',   startR: 13, startC: 6 }  // Mavi Yıldızlı Kare (40. İndeks)
         };
 
-        // Görseldeki tüm yıldızlı karelerin pist üzerindeki indeks karşılıkları
-        const globalStarTrackIndices = [0, 8, 12, 21, 26, 34, 38, 47];
         const diceFaces = ["", "⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
 
-        // Tarayıcıların Autoplay Ses Engelini Kaldırma Köprüsü
-        function unlockAudioContext() {
-            if (audioContextUnlocked) return;
-            ['sound-dice', 'sound-eat', 'sound-home', 'sound-victory'].forEach(id => {
-                let audio = document.getElementById(id);
-                if (audio) {
-                    audio.play().then(() => { audio.pause(); audio.currentTime = 0; }).catch(e => console.log("Ses aktivasyon bekliyor"));
-                }
-            });
-            audioContextUnlocked = true;
-        }
-
-        // Tıklama anında ses kilidini aç
-        document.addEventListener('click', unlockAudioContext, { once: false });
-        document.addEventListener('touchstart', unlockAudioContext, { once: false });
-
-        function unlockAndPlayAudio(audioId) {
-            let soundsAllowed = document.getElementById('chk-play-sounds').checked;
-            if (!soundsAllowed) return;
-
-            let audioEl = document.getElementById(audioId);
-            if (audioEl) {
-                audioEl.currentTime = 0;
-                let playPromise = audioEl.play();
-                if (playPromise !== undefined) {
-                    playPromise.catch((err) => {
-                        console.log("Tarayıcı engeli sebebiyle ses çalınamadı, etkileşim gerekiyor.", err);
-                    });
-                }
+        // SES MOTORU - TARAYICI ENGELLERİNDEN ARINDIRILMIŞ SYNTHESIZER
+        function initAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
             }
         }
+
+        function playSynthSound(type) {
+            try {
+                initAudioContext();
+                if (!document.getElementById('chk-play-sounds').checked) return;
+
+                let osc = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                let now = audioCtx.currentTime;
+
+                if (type === 'dice') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(180, now);
+                    osc.frequency.exponentialRampToValueAtTime(380, now + 0.12);
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.linearRampToValueAtTime(0, now + 0.12);
+                    osc.start(now); osc.stop(now + 0.12);
+                } 
+                else if (type === 'move') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(320, now);
+                    osc.frequency.setValueAtTime(580, now + 0.04);
+                    gain.gain.setValueAtTime(0.25, now);
+                    gain.gain.linearRampToValueAtTime(0, now + 0.06);
+                    osc.start(now); osc.stop(now + 0.06);
+                }
+                else if (type === 'eat') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(450, now);
+                    osc.frequency.linearRampToValueAtTime(80, now + 0.35);
+                    gain.gain.setValueAtTime(0.4, now);
+                    gain.gain.linearRampToValueAtTime(0, now + 0.35);
+                    osc.start(now); osc.stop(now + 0.35);
+                }
+                else if (type === 'home' || type === 'victory') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523, now); 
+                    osc.frequency.setValueAtTime(659, now + 0.08); 
+                    osc.frequency.setValueAtTime(784, now + 0.16); 
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.linearRampToValueAtTime(0, now + 0.3);
+                    osc.start(now); osc.stop(now + 0.3);
+                }
+            } catch (e) {
+                console.log("Ses çalma hatası:", e);
+            }
+        }
+
+        // Tıklama ile sesleri tarayıcıda serbest bırakıyoruz
+        document.addEventListener('click', initAudioContext);
+        document.addEventListener('touchstart', initAudioContext);
 
         function startCountdown(seconds) {
             clearInterval(turnTimerInterval);
@@ -463,49 +424,18 @@
             turnTimerInterval = setInterval(() => {
                 turnTimeLeft--;
                 document.getElementById('turn-timer').innerText = `${turnTimeLeft}s`;
-
                 if (turnTimeLeft <= 0) {
                     clearInterval(turnTimerInterval);
-                    handleTimeOutAction();
+                    autoPlayRandomPawn();
                 }
             }, 1000);
         }
 
-        function handleTimeOutAction() {
-            if (!isWaitingForPawnSelection) {
-                executeDiceRoll();
-            } else {
-                autoPlayRandomPawn();
-            }
-        }
-
-        function toggleParchmentPopup(show) {
-            document.getElementById('settings-popup-parchment').style.display = show ? 'block' : 'none';
-        }
-
-        function toggleMainMenuPopup(show) {
-            document.getElementById('mainmenu-popup-box').style.display = show ? 'block' : 'none';
-        }
-
-        function handleNewGame() {
-            clearInterval(turnTimerInterval);
-            toggleParchmentPopup(false);
-            toggleMainMenuPopup(false);
-            document.getElementById('game-container').style.display = 'none';
-            document.getElementById('settings-menu').style.display = 'block';
-        }
-
-        function handleMainMenu() {
-            clearInterval(turnTimerInterval);
-            toggleParchmentPopup(false);
-            toggleMainMenuPopup(false);
-            location.reload();
-        }
-
-        function managePlayerRow(num) {
-            const isChecked = document.getElementById(`p${num}-active`).checked;
-            document.getElementById(`p${num}-inputs`).style.display = isChecked ? 'flex' : 'none';
-        }
+        function toggleParchmentPopup(show) { document.getElementById('settings-popup-parchment').style.display = show ? 'block' : 'none'; }
+        function toggleMainMenuPopup(show) { document.getElementById('mainmenu-popup-box').style.display = show ? 'block' : 'none'; }
+        function handleNewGame() { clearInterval(turnTimerInterval); toggleParchmentPopup(false); toggleMainMenuPopup(false); document.getElementById('game-container').style.display = 'none'; document.getElementById('settings-menu').style.display = 'block'; }
+        function handleMainMenu() { location.reload(); }
+        function managePlayerRow(num) { document.getElementById(`p${num}-inputs`).style.display = document.getElementById(`p${num}-active`).checked ? 'flex' : 'none'; }
 
         function renderLudoBoard() {
             const boardEl = document.getElementById('ludo-board');
@@ -527,23 +457,21 @@
                     cell.className = "cell c-white";
                     cell.id = `cell-${r}-${c}`;
 
-                    // Renkli güvenli bitiş yolları
+                    // GÜVENLİ BİTİŞ YOLLARI (EV ÖNLERİ)
                     if (r === 7 && c >= 1 && c <= 5) cell.className = "cell c-red";
                     if (c === 7 && r >= 1 && r <= 5) cell.className = "cell c-green";
                     if (c === 7 && r >= 9 && r <= 13) cell.className = "cell c-blue";
                     if (r === 7 && c >= 9 && c <= 13) cell.className = "cell c-yellow";
 
-                    // GÖRSELDEKİ BİREBİR RENKLİ BAŞLANGIÇ YILDIZLARI
+                    // GÖRSELDEKİ BİREBİR RENKLİ YILDIZLI ÇIKIŞ KARELERİ
                     if (r === 6 && c === 1) cell.className = "cell c-red star-cell star-red";
-                    if (r === 0 && c === 8) cell.className = "cell c-green star-cell star-green";
+                    if (r === 1 && c === 8) cell.className = "cell c-green star-cell star-green";
                     if (r === 8 && c === 13) cell.className = "cell c-yellow star-cell star-yellow";
-                    if (r === 14 && c === 6) cell.className = "cell c-blue star-cell star-blue";
+                    if (r === 13 && c === 6) cell.className = "cell c-blue star-cell star-blue";
 
-                    // Diğer gri renkli yardımcı yıldızlar (Görseldeki yerleri)
+                    // Diğer gri renkli güvenli yıldız kareleri
                     if ((r === 2 && c === 6) || (r === 6 && c === 12) || (r === 12 && c === 8) || (r === 8 && c === 2)) {
-                        if (!cell.classList.contains('star-cell')) {
-                            cell.classList.add('star-cell');
-                        }
+                        cell.classList.add('star-cell');
                     }
 
                     boardEl.appendChild(cell);
@@ -576,41 +504,35 @@
                 </svg>
                 <div class="home-target-zone target-red" id="target-red"></div>
                 <div class="home-target-zone target-green" id="target-green"></div>
-                <div class="home-target-zone target-yellow" id="target-yellow"></div>
                 <div class="home-target-zone target-blue" id="target-blue"></div>
+                <div class="home-target-zone target-yellow" id="target-yellow"></div>
             `;
             parent.appendChild(container);
         }
 
         function initLudoGame() {
-            unlockAudioContext();
+            initAudioContext();
             renderLudoBoard();
             players = [];
 
-            document.querySelectorAll('.player-profile-card').forEach(c => c.style.display = 'none');
-
             let p1Name = document.getElementById('p1-name').value.trim() || "Player 1";
-            let p1Shape = document.getElementById('p1-shape').value;
-            players.push({ id: 1, name: p1Name, color: 'red', shape: p1Shape, isBot: document.getElementById('p1-bot').checked });
-            setupProfileCard('red', p1Name, p1Shape);
+            players.push({ id: 1, name: p1Name, color: 'red', shape: document.getElementById('p1-shape').value, isBot: document.getElementById('p1-bot').checked });
+            setupProfileCard('red', p1Name, document.getElementById('p1-shape').value);
 
-            let p3Name = document.getElementById('p3-name').value.trim() || "Player 2";
-            let p3Shape = document.getElementById('p3-shape').value;
-            players.push({ id: 2, name: p3Name, color: 'green', shape: p3Shape, isBot: document.getElementById('p3-bot').checked });
-            setupProfileCard('green', p3Name, p3Shape);
+            let p2Name = document.getElementById('p2-name').value.trim() || "Player 2";
+            players.push({ id: 2, name: p2Name, color: 'green', shape: document.getElementById('p2-shape').value, isBot: document.getElementById('p2-bot').checked });
+            setupProfileCard('green', p2Name, document.getElementById('p2-shape').value);
 
-            if (document.getElementById('p2-active').checked) {
-                let p2Name = document.getElementById('p2-name').value.trim() || "Player 3";
-                let p2Shape = document.getElementById('p2-shape').value;
-                players.push({ id: 3, name: p2Name, color: 'blue', shape: p2Shape, isBot: document.getElementById('p2-bot').checked });
-                setupProfileCard('blue', p2Name, p2Shape);
+            if (document.getElementById('p3-active').checked) {
+                let p3Name = document.getElementById('p3-name').value.trim() || "Player 3";
+                players.push({ id: 3, name: p3Name, color: 'blue', shape: document.getElementById('p3-shape').value, isBot: document.getElementById('p3-bot').checked });
+                setupProfileCard('blue', p3Name, document.getElementById('p3-shape').value);
             }
 
             if (document.getElementById('p4-active').checked) {
                 let p4Name = document.getElementById('p4-name').value.trim() || "Player 4";
-                let p4Shape = document.getElementById('p4-shape').value;
-                players.push({ id: 4, name: p4Name, color: 'yellow', shape: p4Shape, isBot: document.getElementById('p4-bot').checked });
-                setupProfileCard('yellow', p4Name, p4Shape);
+                players.push({ id: 4, name: p4Name, color: 'yellow', shape: document.getElementById('p4-shape').value, isBot: document.getElementById('p4-bot').checked });
+                setupProfileCard('yellow', p4Name, document.getElementById('p4-shape').value);
             }
 
             players.forEach(p => {
@@ -633,21 +555,18 @@
             consecutiveSixes = 0;
             dicePool = [];
             rollDone = false;
-            isWaitingForPawnSelection = false;
             triggerTurnSetup();
         }
 
         function setupProfileCard(color, name, shape) {
-            let card = document.getElementById(`profile-${color}`);
-            card.style.display = 'flex';
+            document.getElementById(`profile-${color}`).style.display = 'flex';
             document.getElementById(`lbl-${color}-name`).innerText = name;
             document.getElementById(`lbl-${color}-shape`).innerText = `Taş: ${shape}`;
         }
 
         function triggerTurnSetup() {
             let p = players[activeTurnIndex];
-            let status = document.getElementById('turn-text');
-            status.innerHTML = `Sıra: <span style="color:${p.color==='yellow'?'#f1c40f':(p.color==='blue'?'#3399ff':'#ff4d4d')}">${p.name}</span>`;
+            document.getElementById('turn-text').innerHTML = `Sıra: <span style="color:${p.color==='yellow'?'#f1c40f':(p.color==='blue'?'#3399ff':(p.color==='green'?'#2ecc71':'#ff4d4d'))}">${p.name}</span>`;
             
             updateDicePoolView();
             isWaitingForPawnSelection = false;
@@ -663,7 +582,7 @@
                 rollDone = false;
                 if (p.isBot) {
                     document.getElementById('dice-btn').disabled = true;
-                    setTimeout(() => { executeDiceRoll(); }, 1000);
+                    setTimeout(executeDiceRoll, 1000);
                 } else {
                     document.getElementById('dice-btn').disabled = false;
                     startCountdown(10);
@@ -678,13 +597,14 @@
         function executeDiceRoll() {
             if (rollDone) return;
             clearInterval(turnTimerInterval);
+            initAudioContext(); // Her tıklandığında ses bağlamını canlandırır
             
             let btn = document.getElementById('dice-btn');
             let cube = document.getElementById('dice-cube');
             btn.disabled = true;
             cube.classList.add('dice-rolling');
             
-            unlockAndPlayAudio('sound-dice');
+            playSynthSound('dice');
 
             let interval = setInterval(() => {
                 cube.innerText = diceFaces[Math.floor(Math.random() * 6) + 1];
@@ -744,7 +664,6 @@
 
             if (!p.isBot) {
                 let outsidePawns = p.pawns.filter(pwn => pwn.step >= 0 && !pwn.isFinished);
-                
                 if (outsidePawns.length === 1 && moveablePawns.length === 1 && currentDice !== 6) {
                     setTimeout(() => { onPawnClicked(p, moveablePawns[0]); }, 500);
                     return;
@@ -753,7 +672,6 @@
                 moveablePawns.forEach(pawnId => {
                     document.getElementById(`pawn-${p.color}-${pawnId}`).classList.add('movable');
                 });
-                
                 startCountdown(10); 
             } else {
                 setTimeout(() => { onPawnClicked(p, moveablePawns[0]); }, 1000);
@@ -762,14 +680,13 @@
 
         function autoPlayRandomPawn() {
             let p = players[activeTurnIndex];
-            if (dicePool.length === 0) return;
+            if (dicePool.length === 0) { switchTurn(); return; }
             
             let currentDice = dicePool[0];
             let moveablePawns = getMoveablePawns(p, currentDice);
             
             if (moveablePawns.length > 0) {
-                let randomChoice = moveablePawns[Math.floor(Math.random() * moveablePawns.length)];
-                onPawnClicked(p, randomChoice);
+                onPawnClicked(p, moveablePawns[0]);
             } else {
                 dicePool.shift();
                 updateDicePoolView();
@@ -784,7 +701,7 @@
                 if (pawn.step === -1 && dice === 6) {
                     list.push(idx);
                 } else if (pawn.step >= 0) {
-                    if (pawn.step + dice <= 56) {
+                    if (pawn.step + dice <= 51) { 
                         list.push(idx);
                     }
                 }
@@ -803,17 +720,17 @@
             clearInterval(turnTimerInterval); 
             document.querySelectorAll('.pawn').forEach(el => el.classList.remove('movable'));
 
-            if (currentDice !== 6) {
-                consecutiveSixes = 0;
-            }
+            if (currentDice !== 6) consecutiveSixes = 0;
 
             dicePool.shift();
             updateDicePoolView();
+            playSynthSound('move');
 
+            // İLK ÇIKIŞ: 6 ATINCA DOĞRUDAN KENDİ YILDIZLI KARELERİNE ADIM 0 OLARAK BAŞLARLAR
             if (pawn.step === -1 && currentDice === 6) {
                 pawn.step = 0; 
                 relocatePawnOnScreen(player.color, pawnId, 0);
-                unlockAndPlayAudio('sound-home');
+                playSynthSound('home');
                 highlightMoveablePawns();
                 return;
             }
@@ -829,10 +746,10 @@
             let pawnEl = document.getElementById(`pawn-${color}-${pawnId}`);
             let conf = teamConfigs[color];
             
-            if (step === 56) {
+            if (step === 51) {
                 document.getElementById(`target-${color}`).appendChild(pawnEl);
                 players.find(p => p.color === color).pawns[pawnId].isFinished = true;
-                unlockAndPlayAudio('sound-home');
+                playSynthSound('home');
                 checkVictoryCondition();
                 reorganizeCellStack(pawnEl.parentElement);
                 return;
@@ -840,8 +757,9 @@
 
             let targetCellEl;
 
-            if (step > 50) {
-                let safeStep = step - 50; 
+            // Ev önündeki 5 adımlık renkli bitiş yolları
+            if (step > 45) {
+                let safeStep = step - 45; 
                 if (color === 'red')    targetCellEl = document.getElementById(`cell-7-${safeStep}`);
                 if (color === 'green')  targetCellEl = document.getElementById(`cell-${safeStep}-7`);
                 if (color === 'blue')   targetCellEl = document.getElementById(`cell-${14 - safeStep}-7`);
@@ -853,20 +771,16 @@
                 targetCellEl = document.getElementById(`cell-${coord.r}-${coord.c}`);
                 
                 let isStartSpot = (coord.r === conf.startR && coord.c === conf.startC);
-                
-                // Yıldız kontrol endeksini koordinat bazlı ve dinamik yaptık
                 let isStarSpot = targetCellEl && targetCellEl.classList.contains('star-cell');
 
                 if (targetCellEl && targetCellEl.children.length > 0) {
                     let existingPawns = Array.from(targetCellEl.children);
-                    let samplePawn = existingPawns[0];
-
-                    if (!samplePawn.id.includes(`pawn-${color}`)) {
-                        let isOpponentSafe = isStartSpot || isStarSpot || (existingPawns.length >= 2);
+                    if (!existingPawns[0].id.includes(`pawn-${color}`)) {
+                        // Kendi yıldızlı başlangıç karesinde veya güvenli yıldızda olan taşlar yenemez
+                        let isOpponentSafe = isStartSpot || isStarSpot;
 
                         if (!isOpponentSafe) {
-                            unlockAndPlayAudio('sound-eat');
-                            
+                            playSynthSound('eat');
                             existingPawns.forEach(opPawn => {
                                 let opColor = opPawn.id.split('-')[1];
                                 let opPawnId = opPawn.id.split('-')[2];
@@ -880,13 +794,10 @@
 
             if (targetCellEl) {
                 let oldParent = pawnEl.parentElement;
-                
-                let showLastAllowed = document.getElementById('chk-show-last-move').checked;
-                if (showLastAllowed) {
+                if (document.getElementById('chk-show-last-move').checked) {
                     document.querySelectorAll('.cell').forEach(c => c.style.outline = 'none');
                     targetCellEl.style.outline = '3px dashed #fff';
                 }
-
                 targetCellEl.appendChild(pawnEl);
                 reorganizeCellStack(oldParent);
                 reorganizeCellStack(targetCellEl);
@@ -895,19 +806,15 @@
 
         function reorganizeCellStack(cellEl) {
             if (!cellEl || cellEl.classList.contains('pocket') || cellEl.classList.contains('home-target-zone')) return;
-            
             let pawns = cellEl.querySelectorAll('.pawn');
             if (pawns.length === 0) return;
 
             if (pawns.length === 1) {
-                pawns[0].style.width = "80%";
-                pawns[0].style.height = "80%";
-                pawns[0].style.transform = "none";
+                pawns[0].style.width = "80%"; pawns[0].style.height = "80%"; pawns[0].style.transform = "none";
             } else {
                 pawns.forEach((pawn, idx) => {
-                    pawn.style.width = "50%";
-                    pawn.style.height = "50%";
-                    pawn.style.transform = `translate(${idx * 3}px, ${idx * 3}px)`;
+                    pawn.style.width = "50%"; pawn.style.height = "50%";
+                    pawn.style.transform = `translate(${idx * 2}px, ${idx * 2}px)`;
                 });
             }
         }
@@ -922,11 +829,12 @@
         function checkVictoryCondition() {
             let activePlayer = players[activeTurnIndex];
             if (activePlayer.pawns.every(p => p.isFinished)) {
-                unlockAndPlayAudio('sound-victory');
-                alert(`🏆 TEBRİKLER! ${activePlayer.name.toUpperCase()} tüm piyonları hedefe ulaştırdı ve KAZANDI!`);
+                playSynthSound('victory');
+                alert(`🏆 ${activePlayer.name.toUpperCase()} Kazandı!`);
                 location.reload();
             }
         }
     </script>
 </body>
 </html>
+            

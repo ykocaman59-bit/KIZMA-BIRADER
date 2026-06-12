@@ -159,23 +159,23 @@
 
         @keyframes bounce { from { transform: scale(1); } to { transform: scale(1.15); } }
 
-        /* PANEL */
-        #control-panel { display: flex; justify-content: space-between; align-items: center; background: #2c3e50; padding: 12px; border-radius: 8px; border: 1px solid #34495e; position: relative; }
-        #dice-btn { background: #e67e22; color: white; border: none; padding: 10px 20px; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer; box-shadow: 0 3px 0 #d35400; width: 45%; }
+        /* ALT KONTROL PANELİ */
+        #control-panel { display: flex; justify-content: space-between; align-items: center; background: #2c3e50; padding: 10px; border-radius: 8px; border: 1px solid #34495e; position: relative; gap: 5px; }
+        #dice-btn { background: #e67e22; color: white; border: none; padding: 10px 12px; font-size: 15px; font-weight: bold; border-radius: 5px; cursor: pointer; box-shadow: 0 3px 0 #d35400; width: 30%; }
         #dice-btn:disabled { background: #7f8c8d; box-shadow: none; cursor: not-allowed; }
-        #dice-result-box { width: 45%; display: flex; justify-content: center; align-items: center; gap: 10px; font-size: 16px; font-weight: bold; }
+        #dice-result-box { width: 35%; display: flex; justify-content: center; align-items: center; font-size: 14px; font-weight: bold; }
         
         /* Gelişmiş Zar Çevrilme Efekti */
         .dice-graphic { 
-            width: 42px; 
-            height: 42px; 
+            width: 38px; 
+            height: 38px; 
             background: white; 
             border-radius: 6px; 
             border: 2px solid #333; 
             display: flex; 
             justify-content: center; 
             align-items: center; 
-            font-size: 26px; 
+            font-size: 24px; 
             color: #000; 
             box-shadow: 0 3px 5px rgba(0,0,0,0.3); 
             transition: transform 0.4s ease;
@@ -187,28 +187,55 @@
             100% { transform: rotate(360deg) scale(0.9); background: #eee; }
         }
 
-        #dice-pool-view { font-size: 12px; color: #f1c40f; margin-top: 4px; display: block; width: 100%; text-align: left; padding-left: 5px; font-family: monospace; }
+        #dice-pool-view { font-size: 11px; color: #f1c40f; margin-top: 3px; display: block; width: 100%; text-align: left; font-family: monospace; }
 
-        /* SEÇENEKLER / AYARLAR MENÜSÜ PANELİ (DAMA TARZI) */
-        #menu-trigger-btn { background: #34495e; border: none; color: white; font-size: 22px; padding: 6px 12px; border-radius: 4px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
-        
-        #ingame-popup-menu { 
+        /* BUTON GRUBU */
+        .action-btn-group { display: flex; gap: 4px; width: 35%; justify-content: flex-end; }
+        .nav-icon-btn { background: #34495e; border: none; color: white; font-size: 16px; padding: 8px 10px; border-radius: 4px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; }
+        .nav-icon-btn:active { transform: translateY(1px); }
+
+        /* DAMA TARZI PARŞÖMEN AYARLAR POPUP (1000190831.jpg) */
+        #settings-popup-parchment {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #f4e4c1; /* Parşömen sarısı arkaplan */
+            color: #4a3319;
+            border: 4px solid #8b5a2b;
+            padding: 18px;
+            border-radius: 10px;
+            z-index: 1001;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            width: 290px;
+            text-align: left;
+        }
+        #settings-popup-parchment h3 { font-size: 18px; border-bottom: 2px solid #8b5a2b; padding-bottom: 5px; margin-bottom: 12px; font-weight: bold; }
+        .setting-item { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-weight: bold; font-size: 14px; cursor: pointer; }
+        .setting-item input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; accent-color: #8b5a2b; }
+        .parchment-close-btn { background: #8b5a2b; color: white; border: none; padding: 8px; width: 100%; font-size: 14px; font-weight: bold; border-radius: 4px; cursor: pointer; margin-top: 5px; text-align: center;}
+
+        /* ANA MENÜ POPUP (1000191179.jpg STİLİ) */
+        #mainmenu-popup-box { 
             display: none; 
             position: fixed; 
             top: 50%; 
             left: 50%; 
             transform: translate(-50%, -50%); 
-            background: rgba(44, 62, 80, 0.98); 
-            border: 3px solid #f1c40f; 
-            padding: 20px; 
-            border-radius: 12px; 
+            background: #e9d5a1; 
+            border: 4px solid #613c18; 
+            padding: 22px; 
+            border-radius: 16px; 
             z-index: 1000; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.8);
             width: 280px;
+            text-align: center;
         }
-        .popup-btn { background: #e74c3c; color: white; border: none; padding: 10px; width: 100%; font-size: 16px; font-weight: bold; border-radius: 6px; margin-bottom: 10px; cursor: pointer; }
-        .popup-btn.blue-btn { background: #3498db; }
-        .popup-btn.close-btn { background: #7f8c8d; margin-bottom: 0; }
+        .menu-popup-title { color: #3d220a; font-size: 20px; font-weight: bold; margin-bottom: 15px; border-bottom: 2px solid #bfa072; padding-bottom: 6px; }
+        .wood-btn { background: #5a3818; color: #fff; border: 2px solid #3d220a; padding: 11px; width: 100%; font-size: 16px; font-weight: bold; border-radius: 8px; margin-bottom: 12px; cursor: pointer; box-shadow: 0 3px 0 #2a1807; }
+        .wood-btn:active { transform: translateY(2px); box-shadow: none; }
+        .wood-btn.red-wood { background: #922b21; box-shadow: 0 3px 0 #5c1a13; border-color: #5c1a13; }
     </style>
 </head>
 <body>
@@ -312,37 +339,69 @@
             <button id="dice-btn" onclick="executeDiceRoll()">Zar At 🎲</button>
             <div id="dice-result-box">
                 <div style="display:flex; flex-direction:column; align-items:center; width:100%;">
-                    <div style="display:flex; align-items:center; gap:8px;">
+                    <div style="display:flex; align-items:center; gap:6px;">
                         <span>Zar:</span>
                         <div id="dice-cube" class="dice-graphic">-</div>
                     </div>
                     <div id="dice-pool-view">Kalan Hamleler: []</div>
                 </div>
             </div>
-            <button id="menu-trigger-btn" onclick="togglePopup(true)">☰</button>
+            
+            <!-- GÖRÜNTÜDEKİ YAN YANA BUTON DÜZENİ (1000191179.jpg) -->
+            <div class="action-btn-group">
+                <button class="nav-icon-btn" onclick="handleNewGame()" title="Yeni Oyun">▶️</button>
+                <button class="nav-icon-btn" onclick="toggleParchmentPopup(true)" title="Ayarlar">⚙️</button>
+                <button class="nav-icon-btn" onclick="toggleMainMenuPopup(true)" title="Menü">☰</button>
+            </div>
         </div>
     </div>
 
-    <!-- DAMA TARZI AYARLAR PENCERESİ -->
-    <div id="ingame-popup-menu">
-        <h3 style="color:#f1c40f; margin-bottom:15px;">Seçenekler</h3>
-        <button class="popup-btn blue-btn" onclick="handleNewGame()">Yeni Oyun</button>
-        <button class="popup-btn" onclick="handleMainMenu()">Ana Menü</button>
-        <button class="popup-btn close-btn" onclick="togglePopup(false)">Kapat</button>
+    <!-- DAMA PARŞÖMEN AYARLAR PENCERESİ (1000190831.jpg UYARLAMASI) -->
+    <div id="settings-popup-parchment">
+        <h3>Ayarlar</h3>
+        <label class="setting-item">
+            <input type="checkbox" id="chk-show-last-move" checked> Son hamleyi göster
+        </label>
+        <label class="setting-item">
+            <input type="checkbox" id="chk-mark-cells" checked> Kareleri işaretle
+        </label>
+        <label class="setting-item">
+            <input type="checkbox" id="chk-show-border" checked> Tahta çerçevesini göster
+        </label>
+        <label class="setting-item">
+            <input type="checkbox" id="chk-play-sounds" checked> Sesleri çal
+        </label>
+        <label class="setting-item">
+            <input type="checkbox" id="chk-parental"> Ebeveyn kontrolü
+        </label>
+        <label class="setting-item">
+            <input type="checkbox" id="chk-fullscreen"> Tam ekran
+        </label>
+        <button class="parchment-close-btn" onclick="toggleParchmentPopup(false)">Tamam</button>
     </div>
 
+    <!-- ANA MENÜ POPUP KUTUSU (1000191179.jpg GÖRSELİNDEKİ GİBİ) -->
+    <div id="mainmenu-popup-box">
+        <div class="menu-popup-title">Ana Menü</div>
+        <button class="wood-btn" onclick="toggleMainMenuPopup(false)">Oyuna Dön</button>
+        <button class="wood-btn red-wood" onclick="handleMainMenu()">Sayfayı Yenile</button>
+    </div>
+
+    <!-- SES DOSYALARI -->
     <audio id="sound-dice" src="https://assets.mixkit.co/active_storage/sfx/2014/2014-84.wav"></audio>
     <audio id="sound-eat" src="https://assets.mixkit.co/active_storage/sfx/2511/2511-84.wav"></audio> 
     <audio id="sound-home" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-84.wav"></audio>
+    <audio id="sound-victory" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-84.wav"></audio>
 
     <script>
         let players = [];
         let activeTurnIndex = 0;
-        let dicePool = []; // Biriken zarların listesi
+        let dicePool = []; 
         let rollDone = false;
         let consecutiveSixes = 0;
-        let hasEatenThisTurn = false; // Bu el rakip taş yenip yenmediğinin kontrolü
+        let hasEatenThisTurn = false; 
         
+        // 52 adet ortak yol hücresinin mutlak harita koordinatları (Saat yönünde tam tur)
         const trackCoordinates = [
             {r:6, c:1}, {r:6, c:2}, {r:6, c:3}, {r:6, c:4}, {r:6, c:5},
             {r:5, c:6}, {r:4, c:6}, {r:3, c:6}, {r:2, c:6}, {r:1, c:6}, {r:0, c:6},
@@ -358,7 +417,7 @@
             {r:7, c:0}, {r:6, c:0}
         ];
 
-        // Eşleşen mutlak ilk çıkış noktaları
+        // Kayma sorunu tamamen giderilmiş mutlak başlangıç indeksleri
         const teamConfigs = {
             'red':    { startTrackIdx: 0,  colorClass: 'c-red',    startR: 6, startC: 1,  starTrackIdx: 0 },
             'green':  { startTrackIdx: 12, colorClass: 'c-green',  startR: 1, startC: 8,  starTrackIdx: 12 },
@@ -369,17 +428,37 @@
         const globalStarTrackIndices = [8, 21, 34, 47];
         const diceFaces = ["", "⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
 
-        function togglePopup(show) {
-            document.getElementById('ingame-popup-menu').style.display = show ? 'block' : 'none';
+        // Ses Tetikleyici Fonksiyon (Ayarlardaki check'e bakar)
+        function playAudioEffect(audioId) {
+            let soundsAllowed = document.getElementById('chk-play-sounds').checked;
+            if (soundsAllowed) {
+                let audioEl = document.getElementById(audioId);
+                if (audioEl) {
+                    audioEl.currentTime = 0;
+                    audioEl.play().catch(e => console.log("Ses çalınamadı"));
+                }
+            }
         }
+
+        function toggleParchmentPopup(show) {
+            document.getElementById('settings-popup-parchment').style.display = show ? 'block' : 'none';
+        }
+
+        function toggleMainMenuPopup(show) {
+            document.getElementById('mainmenu-popup-box').style.display = show ? 'block' : 'none';
+        }
+
         function handleNewGame() {
-            togglePopup(false);
-            initLudoGame();
-        }
-        function handleMainMenu() {
-            togglePopup(false);
+            toggleParchmentPopup(false);
+            toggleMainMenuPopup(false);
             document.getElementById('game-container').style.display = 'none';
             document.getElementById('settings-menu').style.display = 'block';
+        }
+
+        function handleMainMenu() {
+            toggleParchmentPopup(false);
+            toggleMainMenuPopup(false);
+            location.reload();
         }
 
         function managePlayerRow(num) {
@@ -390,6 +469,9 @@
         function renderLudoBoard() {
             const boardEl = document.getElementById('ludo-board');
             boardEl.innerHTML = "";
+
+            let showBorders = document.getElementById('chk-show-border').checked;
+            boardEl.style.border = showBorders ? '6px solid #2c3e50' : 'none';
 
             for (let r = 0; r < 15; r++) {
                 for (let c = 0; c < 15; c++) {
@@ -531,7 +613,6 @@
             document.getElementById(`profile-${p.color}`).style.boxShadow = '0 0 15px #fff';
 
             if (dicePool.length > 0) {
-                // Eğer birikmiş zar varsa tekrar zar atmaya zorlama, piyon oynatmayı dene
                 rollDone = true;
                 document.getElementById('dice-btn').disabled = true;
                 highlightMoveablePawns();
@@ -557,7 +638,7 @@
             let cube = document.getElementById('dice-cube');
             btn.disabled = true;
             cube.classList.add('dice-rolling');
-            document.getElementById('sound-dice').play();
+            playAudioEffect('sound-dice');
 
             let interval = setInterval(() => {
                 cube.innerText = diceFaces[Math.floor(Math.random() * 6) + 1];
@@ -572,10 +653,7 @@
                 dicePool.push(rolled);
                 updateDicePoolView();
 
-                let p = players[activeTurnIndex];
-
                 if (rolled === 6) {
-                    // Eğer bu el henüz taş yemediyse 6 sayacını kontrol et
                     if (!hasEatenThisTurn) {
                         consecutiveSixes++;
                         if (consecutiveSixes === 3) {
@@ -586,35 +664,35 @@
                             return;
                         }
                     }
-                    // 6 atıldığı için zarları biriktirmeye devam et, tekrar zar atma hakkı tanı
                     rollDone = false;
-                    if (p.isBot) {
+                    if (players[activeTurnIndex].isBot) {
                         setTimeout(executeDiceRoll, 1000);
                     } else {
                         btn.disabled = false;
                     }
                 } else {
-                    // 6 dışı zar gelince artık zar atma biter, hamle yapma aşamasına geçilir
                     rollDone = true;
                     highlightMoveablePawns();
                 }
-            }, 400); // 400ms dönme efekti süresi
+            }, 400); 
         }
 
         function highlightMoveablePawns() {
             let p = players[activeTurnIndex];
             document.querySelectorAll('.pawn').forEach(el => el.classList.remove('movable'));
 
+            // Ayarlardaki son hamleyi/hücre işaretleme durum kontrolü
+            let markAllowed = document.getElementById('chk-mark-cells').checked;
+
             if (dicePool.length === 0) {
                 switchTurn();
                 return;
             }
 
-            let currentDice = dicePool[0]; // Havuzdaki ilk zarı oynamaya odaklanıyoruz
+            let currentDice = dicePool[0]; 
             let moveablePawns = getMoveablePawns(p, currentDice);
 
             if (moveablePawns.length === 0) {
-                // Eğer havuzdaki ilk zarla hiçbir şey oynanamıyorsa o zarı yak ve sıradakine geç
                 dicePool.shift();
                 updateDicePoolView();
                 highlightMoveablePawns();
@@ -623,7 +701,10 @@
                     setTimeout(() => { onPawnClicked(p, moveablePawns[0]); }, 1000);
                 } else {
                     moveablePawns.forEach(pawnId => {
-                        document.getElementById(`pawn-${p.color}-${pawnId}`).classList.add('movable');
+                        let pwn = document.getElementById(`pawn-${p.color}-${pawnId}`);
+                        if (markAllowed) {
+                            pwn.classList.add('movable');
+                        }
                     });
                 }
             }
@@ -652,19 +733,15 @@
             let moveableList = getMoveablePawns(player, currentDice);
             if (!moveableList.includes(pawnId)) return;
 
-            // Görsel efektleri temizle
             document.querySelectorAll('.pawn').forEach(el => el.classList.remove('movable'));
 
-            // Kullanılan zarı havuzdan çıkar
             dicePool.shift();
             updateDicePoolView();
 
             if (pawn.step === -1 && currentDice === 6) {
                 pawn.step = 0; 
                 relocatePawnOnScreen(player.color, pawnId, 0);
-                document.getElementById('sound-home').play();
-                
-                // Havuzda başka zar kalıp kalmadığını denetle
+                playAudioEffect('sound-home');
                 highlightMoveablePawns();
                 return;
             }
@@ -676,12 +753,11 @@
             }
         }
 
-        // Korunan rakip yuva koordinatları listesi
         const protectedEnemyStarts = [
-            {r:6, c:1},  // Kırmızı Çıkış
-            {r:1, c:8},  // Yeşil Çıkış
-            {r:8, c:13}, // Sarı Çıkış
-            {r:13, c:6}  // Mavi Çıkış
+            {r:6, c:1},  
+            {r:1, c:8},  
+            {r:8, c:13}, 
+            {r:13, c:6}  
         ];
 
         function relocatePawnOnScreen(color, pawnId, step) {
@@ -691,7 +767,7 @@
             if (step === 56) {
                 document.getElementById(`target-${color}`).appendChild(pawnEl);
                 players.find(p => p.color === color).pawns[pawnId].isFinished = true;
-                document.getElementById('sound-home').play();
+                playAudioEffect('sound-home');
                 checkVictoryCondition();
                 reorganizeCellStack(pawnEl.parentElement);
                 return;
@@ -713,24 +789,19 @@
                 
                 let isStartSpot = (coord.r === conf.startR && coord.c === conf.startC);
                 let isStarSpot = globalStarTrackIndices.includes(actualTrackIndex) || (actualTrackIndex === conf.starTrackIdx);
-
-                // Gelen koordinat bir RAKİBİN ana çıkış yuvası mı?
                 let isAnEnemyHomeCell = protectedEnemyStarts.some(p => p.r === coord.r && p.c === coord.c);
 
-                if (targetCellEl.children.length > 0) {
+                if (targetCellEl && targetCellEl.children.length > 0) {
                     let existingPawns = Array.from(targetCellEl.children);
                     let samplePawn = existingPawns[0];
 
                     if (!samplePawn.id.includes(`pawn-${color}`)) {
-                        // Eğer rakip yuvası hücresiyse, oradaki taşlar KORUMALIDIR (yenemez)
                         let isOpponentSafe = isStartSpot || isStarSpot || isAnEnemyHomeCell || (existingPawns.length >= 2);
 
                         if (!isOpponentSafe) {
-                            document.getElementById('sound-eat').play();
-                            
-                            // Taş yeme gerçekleştiği için kurallar güncellenir
+                            playAudioEffect('sound-eat');
                             hasEatenThisTurn = true;
-                            consecutiveSixes = 0; // 6 sayacı sıfırlanır, artık sınırsız hakkı olur.
+                            consecutiveSixes = 0; 
 
                             existingPawns.forEach(opPawn => {
                                 let opColor = opPawn.id.split('-')[1];
@@ -746,8 +817,15 @@
 
             if (targetCellEl) {
                 let oldParent = pawnEl.parentElement;
-                targetCellEl.appendChild(pawnEl);
                 
+                // Ayarlardaki "Son hamleyi göster" seçeneğine göre efekt verme
+                let showLastAllowed = document.getElementById('chk-show-last-move').checked;
+                if (showLastAllowed) {
+                    document.querySelectorAll('.cell').forEach(c => c.style.outline = 'none');
+                    targetCellEl.style.outline = '3px dashed #fff';
+                }
+
+                targetCellEl.appendChild(pawnEl);
                 reorganizeCellStack(oldParent);
                 reorganizeCellStack(targetCellEl);
             }
@@ -773,7 +851,7 @@
         }
 
         function switchTurn() {
-            hasEatenThisTurn = false; // Yeni oyuncuya geçerken durum sıfırlanır
+            hasEatenThisTurn = false; 
             activeTurnIndex = (activeTurnIndex + 1) % players.length;
             dicePool = [];
             triggerTurnSetup();
@@ -782,6 +860,7 @@
         function checkVictoryCondition() {
             let activePlayer = players[activeTurnIndex];
             if (activePlayer.pawns.every(p => p.isFinished)) {
+                playAudioEffect('sound-victory');
                 alert(`🏆 TEBRİKLER! ${activePlayer.name.toUpperCase()} tüm piyonları hedefe ulaştırdı ve KAZANDI!`);
                 location.reload();
             }
@@ -789,4 +868,3 @@
     </script>
 </body>
 </html>
-       

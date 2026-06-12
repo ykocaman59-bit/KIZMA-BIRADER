@@ -2,28 +2,32 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerçek Kızma Birader PRO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kızma Birader PRO</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-        body { background: #1e1e1e; color: #fff; text-align: center; padding: 10px; }
-        h1 { font-size: 20px; color: #f1c40f; margin-bottom: 5px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; }
+        body { background: #1a1a1a; color: #fff; text-align: center; padding: 5px; }
+        h1 { font-size: 22px; color: #f1c40f; margin: 5px 0; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
 
-        /* AYARLAR MENÜSÜ */
-        #settings-menu { background: #2d2d2d; padding: 15px; border-radius: 10px; max-width: 450px; margin: 10px auto; border: 2px solid #444; }
-        .setup-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 8px; border-radius: 5px; }
-        .p1 { border-left: 5px solid #e74c3c; background: #3a2222; }
-        .p2 { border-left: 5px solid #3498db; background: #222d3a; }
-        .p3 { border-left: 5px solid #2ecc71; background: #223a26; }
-        .p4 { border-left: 5px solid #f1c40f; background: #3a3822; }
-        input[type="text"] { padding: 4px; width: 100px; border-radius: 3px; border: 1px solid #666; background: #111; color: #fff; }
-        .btn { background: #27ae60; color: white; border: none; padding: 10px; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer; width: 100%; margin-top: 10px; }
+        /* GİRİŞ VE AYARLAR MENÜSÜ */
+        #settings-menu { background: #2c3e50; padding: 15px; border-radius: 12px; max-width: 440px; margin: 10px auto; border: 2px solid #34495e; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .menu-title { color: #f1c40f; margin-bottom: 12px; font-size: 18px; }
+        .setup-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 10px; border-radius: 8px; font-weight: bold; }
+        .p1 { background: #c0392b; border-left: 6px solid #ff4d4d; }
+        .p2 { background: #2980b9; border-left: 6px solid #3399ff; }
+        .p3 { background: #27ae60; border-left: 6px solid #2ecc71; }
+        .p4 { background: #d35400; border-left: 6px solid #f1c40f; }
+        input[type="text"] { padding: 6px; width: 120px; border-radius: 4px; border: none; background: #fff; color: #333; font-weight: bold; }
+        .bot-lbl { display: flex; align-items: center; gap: 4px; font-size: 13px; cursor: pointer; }
+        .bot-lbl input { width: 16px; height: 16px; }
+        .btn-start { background: #27ae60; color: white; border: none; padding: 12px; font-size: 18px; font-weight: bold; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 10px; box-shadow: 0 3px 0 #1e7e43; }
+        .btn-start:active { transform: translateY(2px); box-shadow: none; }
 
         /* OYUN ALANI */
-        #game-container { display: none; max-width: 460px; margin: 0 auto; }
-        #status-bar { background: #333; padding: 8px; border-radius: 5px; margin-bottom: 10px; font-weight: bold; font-size: 14px; }
+        #game-container { display: none; max-width: 450px; margin: 0 auto; }
+        #status-bar { background: #2c3e50; padding: 10px; border-radius: 6px; margin-bottom: 8px; font-weight: bold; font-size: 14px; border: 1px solid #34495e; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); }
 
-        /* GERÇEK 15x15 LUDO TAHTASI */
+        /* TAM ŞEMAYA UYGUN 15x15 LUDO TAHTASI */
         #ludo-board { 
             display: grid; 
             grid-template-columns: repeat(15, 1fr); 
@@ -31,43 +35,69 @@
             width: 100%; 
             aspect-ratio: 1/1; 
             background: #fff; 
-            border: 4px solid #333;
-            margin-bottom: 10px;
+            border: 6px solid #2c3e50;
+            border-radius: 8px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+            position: relative;
         }
-        .cell { border: 1px solid #ccc; display: flex; justify-content: center; align-items: center; position: relative; }
+
+        /* Standart Hücre Yapısı */
+        .cell { background: #ffffff; border: 1px solid #bdc3c7; display: flex; justify-content: center; align-items: center; position: relative; }
         
-        /* Renk Alanları */
-        .red { background: #e74c3c !important; }
-        .blue { background: #3498db !important; }
-        .green { background: #2ecc71 !important; }
-        .yellow { background: #f1c40f !important; }
-        .white { background: #ffffff; }
-        .gray { background: #eeeeee; }
+        /* Renklendirmeler */
+        .c-red { background: #ff4d4d !important; }
+        .c-blue { background: #3399ff !important; }
+        .c-green { background: #2ecc71 !important; }
+        .c-yellow { background: #f1c40f !important; }
+        .c-white { background: #ffffff !important; }
 
-        /* Kaleler / Evler (Büyük Alanlar) */
-        .home-box { grid-column: span 6; grid-row: span 6; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px; padding: 10px; }
-        .center-box { grid-column: span 3; grid-row: span 3; background: #333; display: flex; justify-content: center; align-items: center; font-size: 12px; font-weight: bold; }
+        /* Büyük Ev Kaleleri (6x6 Bloklar) */
+        .nest { grid-column: span 6; grid-row: span 6; display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 12px; padding: 14px; box-shadow: inset 0 0 10px rgba(0,0,0,0.2); }
+        .nest-red { background: #ff4d4d; }
+        .nest-green { background: #2ecc71; }
+        .nest-blue { background: #3399ff; }
+        .nest-yellow { background: #f1c40f; }
+        .pocket { background: #fff; border-radius: 50%; border: 2px solid #333; display: flex; justify-content: center; align-items: center; box-shadow: inset 0 2px 5px rgba(0,0,0,0.3); }
 
-        /* Piyon Tasarımı */
+        /* Orta Bitiş Üçgenleri (3x3 Blok) */
+        .center-triangle-container { grid-column: span 3; grid-row: span 3; position: relative; background: #fff; border: 1px solid #bdc3c7; }
+        .triangle-svg { width: 100%; height: 100%; position: absolute; top:0; left:0; }
+
+        /* Bitiş Yuvaları İçin Görsel Konteynerler */
+        .home-target-zone { position: absolute; width: 30%; height: 30%; display: flex; justify-content: center; align-items: center; z-index: 5; }
+        .target-red { left: 5%; top: 35%; }
+        .target-green { left: 35%; top: 5%; }
+        .target-yellow { right: 5%; top: 35%; }
+        .target-blue { left: 35%; bottom: 5%; }
+
+        /* PİYON TASARIMI */
         .pawn {
-            width: 18px;
-            height: 18px;
+            width: 75%;
+            height: 75%;
             border-radius: 50%;
             border: 2px solid #fff;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
-            display: inline-block;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.4), inset 0 -3px 5px rgba(0,0,0,0.3);
             cursor: pointer;
-            z-index: 10;
+            z-index: 20;
+            transition: transform 0.2s ease, top 0.2s, left 0.2s;
+            position: relative;
         }
-        .pawn-1 { background: #c0392b; }
-        .pawn-2 { background: #2980b9; }
-        .pawn-3 { background: #27ae60; }
-        .pawn-4 { background: #f39c12; }
+        .pawn::after { content: ''; display: block; width: 40%; height: 40%; background: rgba(255,255,255,0.4); border-radius: 50%; margin: 15% auto 0 auto; }
+        .pawn.movable { animation: bounce 0.4s infinite alternate; border: 2px solid #fff; box-shadow: 0 0 10px #fff; }
+        
+        .pawn-red { background: #c0392b; }
+        .pawn-blue { background: #2980b9; }
+        .pawn-green { background: #27ae60; }
+        .pawn-yellow { background: #d35400; }
 
-        /* Zar Bölümü */
-        #dice-section { display: flex; justify-content: space-around; align-items: center; background: #333; padding: 10px; border-radius: 5px; }
-        #dice-btn { background: #e67e22; color: white; border: none; padding: 8px 15px; font-size: 16px; border-radius: 4px; cursor: pointer; }
-        #dice-view { font-size: 24px; font-weight: bold; color: #f1c40f; }
+        @keyframes bounce { from { transform: scale(1); } to { transform: scale(1.15); } }
+
+        /* ZAR VE KONTROL ALANI */
+        #control-panel { display: flex; justify-content: space-between; align-items: center; background: #2c3e50; padding: 12px; border-radius: 8px; margin-top: 10px; border: 1px solid #34495e; }
+        #dice-btn { background: #e67e22; color: white; border: none; padding: 10px 20px; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer; box-shadow: 0 3px 0 #d35400; width: 45%; }
+        #dice-btn:disabled { background: #7f8c8d; box-shadow: none; cursor: not-allowed; }
+        #dice-result-box { width: 45%; display: flex; justify-content: center; align-items: center; gap: 10px; font-size: 18px; font-weight: bold; }
+        .dice-graphic { width: 40px; height: 40px; background: white; border-radius: 6px; border: 2px solid #333; display: flex; justify-content: center; align-items: center; font-size: 24px; color: #000; box-shadow: 0 3px 5px rgba(0,0,0,0.3); }
     </style>
 </head>
 <body>
@@ -75,37 +105,37 @@
     <h1>Kızma Birader PRO</h1>
 
     <div id="settings-menu">
-        <h3 style="margin-bottom: 10px; color: #f1c40f;">Oyuncu Ayarları</h3>
+        <h3 class="menu-title">⚙️ Oyuncu Ayarları</h3>
         
         <div class="setup-row p1">
             <span>1. Takım (Kırmızı):</span>
             <input type="text" id="p1-name" placeholder="Yusuf">
-            <label><input type="checkbox" id="p1-bot"> Bot Yap</label>
+            <label class="bot-lbl"><input type="checkbox" id="p1-bot"> Bot yap</label>
         </div>
 
         <div class="setup-row p2">
             <span>2. Takım (Mavi):</span>
             <input type="text" id="p2-name" placeholder="Player 2">
-            <label><input type="checkbox" id="p2-bot"> Bot Yap</label>
+            <label class="bot-lbl"><input type="checkbox" id="p2-bot"> Bot yap</label>
         </div>
 
         <div class="setup-row p3">
-            <label><input type="checkbox" id="p3-active" onchange="togglePlayer(3)"> 3. Takımı Aç (Yeşil)</label>
-            <div id="p3-inputs" style="display: none; align-items: center; gap: 5px; margin-top: 5px;">
+            <label style="cursor:pointer;"><input type="checkbox" id="p3-active" onchange="managePlayerRow(3)"> 3. Takımı Aç (Yeşil)</label>
+            <div id="p3-inputs" style="display: none; align-items: center; gap: 8px; margin-top: 6px;">
                 <input type="text" id="p3-name" placeholder="Player 3">
-                <label><input type="checkbox" id="p3-bot"> Bot Yap</label>
+                <label class="bot-lbl"><input type="checkbox" id="p3-bot"> Bot yap</label>
             </div>
         </div>
 
         <div class="setup-row p4">
-            <label><input type="checkbox" id="p4-active" onchange="togglePlayer(4)"> 4. Takımı Aç (Sarı)</label>
-            <div id="p4-inputs" style="display: none; align-items: center; gap: 5px; margin-top: 5px;">
+            <label style="cursor:pointer;"><input type="checkbox" id="p4-active" onchange="managePlayerRow(4)"> 4. Takımı Aç (Sarı)</label>
+            <div id="p4-inputs" style="display: none; align-items: center; gap: 8px; margin-top: 6px;">
                 <input type="text" id="p4-name" placeholder="Player 4">
-                <label><input type="checkbox" id="p4-bot"> Bot Yap</label>
+                <label class="bot-lbl"><input type="checkbox" id="p4-bot"> Bot yap</label>
             </div>
         </div>
 
-        <button class="btn" onclick="startGame()">Oyunu Başlat</button>
+        <button class="btn-start" onclick="initLudoGame()">Oyunu Başlat 🚀</button>
     </div>
 
     <div id="game-container">
@@ -113,216 +143,382 @@
         
         <div id="ludo-board"></div>
 
-        <div id="dice-section">
-            <button id="dice-btn" onclick="rollDice()">Zar At 🎲</button>
-            <div id="dice-view">-</div>
+        <div id="control-panel">
+            <button id="dice-btn" onclick="executeDiceRoll()">Zar At 🎲</button>
+            <div id="dice-result-box">
+                <span>Zar:</span>
+                <div id="dice-cube" class="dice-graphic">-</div>
+            </div>
         </div>
     </div>
 
     <audio id="sound-dice" src="https://assets.mixkit.co/active_storage/sfx/2014/2014-84.wav"></audio>
-    <audio id="sound-eat" src="https://assets.mixkit.co/active_storage/sfx/2511/2511-84.wav"></audio>
+    <audio id="sound-eat" src="https://assets.mixkit.co/active_storage/sfx/2511/2511-84.wav"></audio> 
     <audio id="sound-home" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-84.wav"></audio>
 
     <script>
-        let board = document.getElementById('ludo-board');
         let players = [];
-        let activeTurn = 0;
-        let currentDiceValue = 0;
-        let hasRolled = false;
+        let activeTurnIndex = 0;
+        let diceVal = 0;
+        let rollDone = false;
+        let consecutiveSixes = 0;
+        
+        // Şemadaki Hücrelerin Orijinal İndis Koordinatları (Kızma Birader Pist Yolu)
+        const trackCoordinates = [
+            {r:6, c:1}, {r:6, c:2}, {r:6, c:3}, {r:6, c:4}, {r:6, c:5},
+            {r:5, c:6}, {r:4, c:6}, {r:3, c:6}, {r:2, c:6}, {r:1, c:6}, {r:0, c:6},
+            {r:0, c:7},
+            {r:0, c:8}, {r:1, c:8}, {r:2, c:8}, {r:3, c:8}, {r:4, c:8}, {r:5, c:8},
+            {r:6, c:9}, {r:6, c:10}, {r:6, c:11}, {r:6, c:12}, {r:6, c:13}, {r:6, c:14},
+            {r:7, c:14},
+            {r:8, c:14}, {r:8, c:13}, {r:8, c:12}, {r:8, c:11}, {r:8, c:10}, {r:8, c:9},
+            {r:9, c:8}, {r:10, c:8}, {r:11, c:8}, {r:12, c:8}, {r:13, c:8}, {r:14, c:8},
+            {r:14, c:7},
+            {r:14, c:6}, {r:13, c:6}, {r:12, c:6}, {r:11, c:6}, {r:10, c:6}, {r:9, c:6},
+            {r:8, c:5}, {r:8, c:4}, {r:8, c:3}, {r:8, c:2}, {r:8, c:1}, {r:8, c:0},
+            {r:7, c:0}, {r:6, c:0}
+        ];
 
-        // 15x15 Haritayı Oluşturma Mantığı
-        function createBoard() {
-            board.innerHTML = "";
-            for (let row = 0; row < 15; row++) {
-                for (let col = 0; col < 15; col++) {
-                    // Kaleler (Evler)
-                    if (row < 6 && col < 6) { if(row==0 && col==0) buildHome('green'); continue; }
-                    if (row < 6 && col > 8) { if(row==0 && col==9) buildHome('yellow'); continue; }
-                    if (row > 8 && col < 6) { if(row==9 && col==0) buildHome('red'); continue; }
-                    if (row > 8 && col > 8) { if(row==9 && col==9) buildHome('blue'); continue; }
-                    
-                    // Merkez Hedef (Bitiş)
-                    if (row >= 6 && row <= 8 && col >= 6 && col <= 8) {
-                        if(row==6 && col==6) {
-                            let center = document.createElement('div');
-                            center.className = "center-box";
-                            center.innerText = "BİTİŞ";
-                            board.appendChild(center);
+        // Takımların Özel Verileri (Kalkış Noktaları ve Güvenli Bitiş Şeritleri)
+        const teamConfigs = {
+            'red':    { startTrackIdx: 0,  homeStartIndex: 51, colorClass: 'c-red',    startR: 6, startC: 1 },
+            'green':  { startTrackIdx: 12, homeStartIndex: 11, colorClass: 'c-green',  startR: 1, startC: 8 },
+            'yellow': { startTrackIdx: 24, homeStartIndex: 23, colorClass: 'c-yellow', startR: 8, startC: 13 },
+            'blue':   { startTrackIdx: 36, homeStartIndex: 35, colorClass: 'c-blue',   startR: 13, startC: 6 }
+        };
+
+        const diceFaces = ["", "⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
+
+        function managePlayerRow(num) {
+            const isChecked = document.getElementById(`p${num}-active`).checked;
+            document.getElementById(`p${num}-inputs`).style.display = isChecked ? 'flex' : 'none';
+        }
+
+        // TAM ŞEMAYA UYGUN HARİTA YAPILANDIRMASI
+        function renderLudoBoard() {
+            const boardEl = document.getElementById('ludo-board');
+            boardEl.innerHTML = "";
+
+            for (let r = 0; r < 15; r++) {
+                for (let c = 0; c < 15; c++) {
+                    // Üst Sol Yuva (Yeşil Ev)
+                    if (r < 6 && c < 6) {
+                        if (r === 0 && c === 0) buildNestElement(boardEl, 'green', 'nest-green');
+                        continue;
+                    }
+                    // Üst Sağ Yuva (Sarı Ev)
+                    if (r < 6 && c > 8) {
+                        if (r === 0 && c === 9) buildNestElement(boardEl, 'yellow', 'nest-yellow');
+                        continue;
+                    }
+                    // Alt Sol Yuva (Kırmızı Ev)
+                    if (r > 8 && c < 6) {
+                        if (r === 9 && c === 0) buildNestElement(boardEl, 'red', 'nest-red');
+                        continue;
+                    }
+                    // Alt Sağ Yuva (Mavi Ev)
+                    if (r > 8 && c > 8) {
+                        if (r === 9 && c === 9) buildNestElement(boardEl, 'blue', 'nest-blue');
+                        continue;
+                    }
+
+                    // Merkez Bitiş Üçgenleri Alanı (3x3)
+                    if (r >= 6 && r <= 8 && c >= 6 && c <= 8) {
+                        if (r === 6 && c === 6) {
+                            buildCenterTriangles(boardEl);
                         }
                         continue;
                     }
 
-                    // Normal Yollar ve Güvenli Şeritler
+                    // Yol Hücreleri
                     let cell = document.createElement('div');
-                    cell.className = "cell white";
-                    cell.setAttribute('data-row', row);
-                    cell.setAttribute('data-col', col);
+                    cell.className = "cell c-white";
+                    cell.id = `cell-${r}-${c}`;
 
-                    // Renkli yolları ata
-                    if (row == 7 && col > 0 && col < 6) cell.className = "cell red";
-                    if (row == 7 && col > 8 && col < 14) cell.className = "cell yellow";
-                    if (col == 7 && row > 0 && row < 6) cell.className = "cell green";
-                    if (col == 7 && row > 8 && row < 14) cell.className = "cell blue";
-                    
-                    // Başlangıç noktaları kareleri
-                    if (row == 6 && col == 1) cell.className = "cell red";
-                    if (row == 1 && col == 8) cell.className = "cell green";
-                    if (row == 8 && col == 13) cell.className = "cell yellow";
-                    if (row == 13 && col == 6) cell.className = "cell blue";
+                    // Şemadaki Renkli Hedef Yolları
+                    if (r === 7 && c >= 1 && c <= 6) cell.classList.add('c-red');
+                    if (c === 7 && r >= 1 && r <= 6) cell.classList.add('c-green');
+                    if (r === 7 && c >= 8 && c <= 13) cell.classList.add('c-yellow');
+                    if (c === 7 && r >= 8 && r <= 14) cell.classList.add('c-blue');
 
-                    board.appendChild(cell);
+                    // Şemadaki Özel Kalkış Kareleri
+                    if (r === 6 && c === 1) cell.classList.add('c-red');
+                    if (r === 1 && c === 8) cell.classList.add('c-green');
+                    if (r === 8 && c === 13) cell.classList.add('c-yellow');
+                    if (r === 13 && c === 6) cell.classList.add('c-blue');
+
+                    boardEl.appendChild(cell);
                 }
             }
         }
 
-        function buildHome(color) {
-            let home = document.createElement('div');
-            home.className = `home-box ${color}`;
-            home.id = `home-${color}`;
-            board.appendChild(home);
+        function buildNestElement(parent, colorName, className) {
+            let nest = document.createElement('div');
+            nest.className = `nest ${className}`;
+            nest.id = `nest-${colorName}`;
+            for (let i = 0; i < 4; i++) {
+                let pocket = document.createElement('div');
+                pocket.className = "pocket";
+                pocket.id = `pocket-${colorName}-${i}`;
+                nest.appendChild(pocket);
+            }
+            parent.appendChild(nest);
         }
 
-        function togglePlayer(num) {
-            const isActive = document.getElementById(`p${num}-active`).checked;
-            document.getElementById(`p${num}-inputs`).style.display = isActive ? 'flex' : 'none';
+        function buildCenterTriangles(parent) {
+            let container = document.createElement('div');
+            container.className = "center-triangle-container";
+            
+            container.innerHTML = `
+                <svg class="triangle-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <polygon points="0,0 50,50 0,100" fill="#ff4d4d" stroke="#bdc3c7" stroke-width="0.5"/>
+                    <polygon points="0,0 50,50 100,0" fill="#2ecc71" stroke="#bdc3c7" stroke-width="0.5"/>
+                    <polygon points="100,0 50,50 100,100" fill="#f1c40f" stroke="#bdc3c7" stroke-width="0.5"/>
+                    <polygon points="0,100 50,50 100,100" fill="#3399ff" stroke="#bdc3c7" stroke-width="0.5"/>
+                </svg>
+                <div class="home-target-zone target-red" id="target-red"></div>
+                <div class="home-target-zone target-green" id="target-green"></div>
+                <div class="home-target-zone target-yellow" id="target-yellow"></div>
+                <div class="home-target-zone target-blue" id="target-blue"></div>
+            `;
+            parent.appendChild(container);
         }
 
-        // Oyunu Başlat
-        function startGame() {
-            createBoard();
+        // OYUN KURULUMU VE BAŞLATMA
+        function initLudoGame() {
+            renderLudoBoard();
             players = [];
 
-            let names = [
-                document.getElementById('p1-name').value.trim() || "player1",
-                document.getElementById('p2-name').value.trim() || "player2",
-                document.getElementById('p3-name').value.trim() || "player3",
-                document.getElementById('p4-name').value.trim() || "palyer4"
-            ];
+            let p1Name = document.getElementById('p1-name').value.trim() || "Yusuf";
+            let p2Name = document.getElementById('p2-name').value.trim() || "player2";
 
-            let activeBots = [
-                document.getElementById('p1-bot').checked,
-                document.getElementById('p2-bot').checked,
-                document.getElementById('p3-bot').checked,
-                document.getElementById('p4-bot').checked
-            ];
+            players.push({ id: 1, name: p1Name, color: 'red', label: 'Kırmızı', isBot: document.getElementById('p1-bot').checked });
+            players.push({ id: 2, name: p2Name, color: 'blue', label: 'Mavi', isBot: document.getElementById('p2-bot').checked });
 
-            // Kırmızı ve Mavi Zorunlu
-            players.push({ id: 1, name: names[0], color: 'red', txt: 'Kırmızı', isBot: activeBots[0] });
-            players.push({ id: 2, name: names[1], color: 'blue', txt: 'Mavi', isBot: activeBots[1] });
-
-            if(document.getElementById('p3-active').checked) {
-                players.push({ id: 3, name: names[2], color: 'green', txt: 'Yeşil', isBot: activeBots[2] });
+            if (document.getElementById('p3-active').checked) {
+                let p3Name = document.getElementById('p3-name').value.trim() || "player3";
+                players.push({ id: 3, name: p3Name, color: 'green', label: 'Yeşil', isBot: document.getElementById('p3-bot').checked });
             }
-            if(document.getElementById('p4-active').checked) {
-                players.push({ id: 4, name: names[3], color: 'yellow', txt: 'Sarı', isBot: activeBots[3] });
+            if (document.getElementById('p4-active').checked) {
+                let p4Name = document.getElementById('p4-name').value.trim() || "palyer4";
+                players.push({ id: 4, name: p4Name, color: 'yellow', label: 'Sarı', isBot: document.getElementById('p4-bot').checked });
             }
 
-            // Piyonları Evlerine Yerleştir (Her takıma 2 temsili piyon yerleştiriyoruz test kolaylığı için)
+            // Piyonları Oluştur ve Yuvalarına Koy
             players.forEach(p => {
-                let homeContainer = document.getElementById(`home-${p.color}`);
-                for(let i=0; i<2; i++) {
-                    let pawn = document.createElement('div');
-                    pawn.className = `pawn pawn-${p.id}`;
-                    pawn.onclick = () => movePawn(p, pawn);
-                    homeContainer.appendChild(pawn);
+                p.pawns = [];
+                for (let i = 0; i < 4; i++) {
+                    let pawnData = { id: i, step: -1, isFinished: false };
+                    p.pawns.push(pawnData);
+                    
+                    let pawnEl = document.createElement('div');
+                    pawnEl.className = `pawn pawn-${p.color}`;
+                    pawnEl.id = `pawn-${p.color}-${i}`;
+                    pawnEl.onclick = () => onPawnClicked(p, i);
+                    
+                    document.getElementById(`pocket-${p.color}-${i}`).appendChild(pawnEl);
                 }
             });
 
             document.getElementById('settings-menu').style.display = 'none';
             document.getElementById('game-container').style.display = 'block';
-            
-            activeTurn = 0;
-            hasRolled = false;
-            updateTurn();
+
+            activeTurnIndex = 0;
+            consecutiveSixes = 0;
+            rollDone = false;
+            triggerTurnSetup();
         }
 
-        function updateTurn() {
-            let p = players[activeTurn];
+        function triggerTurnSetup() {
+            let p = players[activeTurnIndex];
             let status = document.getElementById('status-bar');
-            status.innerHTML = `Sıra: <span style="color:${p.color === 'yellow' ? '#f1c40f' : p.color}; text-transform: uppercase;">${p.name}</span> (${p.txt})`;
-            hasRolled = false;
+            status.innerHTML = `Sıra: <span style="color:${p.color==='yellow'?'#f1c40f':(p.color==='blue'?'#3399ff':'#ff4d4d')}">${p.name}</span> takımında!`;
+            rollDone = false;
 
-            if(p.isBot) {
+            if (p.isBot) {
                 document.getElementById('dice-btn').disabled = true;
-                setTimeout(() => { rollDice(); }, 1200);
+                setTimeout(() => { executeDiceRoll(); }, 1200);
             } else {
                 document.getElementById('dice-btn').disabled = false;
             }
         }
 
-        function rollDice() {
-            if(hasRolled) return;
+        // ZAR ATMA MEKANİZMASI
+        function executeDiceRoll() {
+            if (rollDone) return;
             document.getElementById('sound-dice').play();
-            
-            currentDiceValue = Math.floor(Math.random() * 6) + 1;
-            document.getElementById('dice-view').innerText = `🎲 ${currentDiceValue}`;
-            hasRolled = true;
 
-            let p = players[activeTurn];
-            if(p.isBot) {
-                // Bot ise otomatik piyon seçip hamle yapma simülasyonu
-                setTimeout(() => {
-                    let pawns = document.querySelectorAll(`.pawn-${p.id}`);
-                    if(pawns.length > 0) {
-                        movePawn(p, pawns[0]);
-                    } else {
-                        nextTurn();
-                    }
-                }, 1000);
-            }
-        }
+            diceVal = Math.floor(Math.random() * 6) + 1;
+            document.getElementById('dice-cube').innerText = diceFaces[diceVal];
+            rollDone = true;
 
-        function movePawn(player, pawnElement) {
-            if(!hasRolled) return;
-            
-            // Eğer piyon evdeyse ve 6 gelmediyse çıkamaz (Gerçek kural)
-            if(pawnElement.parentElement.classList.contains('home-box') && currentDiceValue !== 6) {
-                nextTurn();
-                return;
-            }
+            let p = players[activeTurnIndex];
 
-            // Evden Çıkış Noktaları koordinatları
-            if(pawnElement.parentElement.classList.contains('home-box') && currentDiceValue === 6) {
-                let startCell;
-                if(player.color === 'red') startCell = document.querySelector('[data-row="6"][data-col="1"]');
-                if(player.color === 'blue') startCell = document.querySelector('[data-row="13"][data-col="6"]');
-                if(player.color === 'green') startCell = document.querySelector('[data-row="1"][data-col="8"]');
-                if(player.color === 'yellow') startCell = document.querySelector('[data-row="8"][data-col="13"]');
-                
-                if(startCell) {
-                    // Piyonun üzerine basılınca yeme kontrolü
-                    if(startCell.children.length > 0 && !startCell.children[0].classList.contains(`pawn-${player.id}`)) {
-                        document.getElementById('sound-eat').play();
-                        let targetHome = document.getElementById(`home-${players[0].color}`); // Basitçe eve geri gönder
-                        targetHome.appendChild(startCell.children[0]);
-                    }
-                    startCell.appendChild(pawnElement);
-                    document.getElementById('sound-home').play(); // Güvenli çıkış/ilerleme sesi
+            // Üst Üste 3 Defa 6 Atma Cezası Kontrolü
+            if (diceVal === 6) {
+                consecutiveSixes++;
+                if (consecutiveSixes === 3) {
+                    alert(`🚨 Üst üste 3 kez 6 attığın için cezalısın! Sıra diğer oyuncuya geçiyor.`);
+                    consecutiveSixes = 0;
+                    setTimeout(switchTurn, 1200);
+                    return;
                 }
-                nextTurn();
+            } else {
+                consecutiveSixes = 0;
+            }
+
+            // Oynatılabilecek Piyonları Hesapla
+            let moveablePawns = getMoveablePawns(p, diceVal);
+
+            if (moveablePawns.length === 0) {
+                // Hamle yoksa sıra geçer (Zar 6 değilse ve dışarıda taş yoksa)
+                setTimeout(switchTurn, 1200);
+            } else {
+                if (p.isBot) {
+                    // Bot Yapay Zekası: Hamle yapabilen ilk piyonu otomatik seçer
+                    setTimeout(() => { onPawnClicked(p, moveablePawns[0]); }, 1000);
+                } else {
+                    // İnsan Oyuncu İçin Taşları Parlat
+                    moveablePawns.forEach(pawnId => {
+                        document.getElementById(`pawn-${p.color}-${pawnId}`).classList.add('movable');
+                    });
+                }
+            }
+        }
+
+        // HAREKET EDEBİLİR TAŞLARIN KONTROLÜ
+        function getMoveablePawns(player, dice) {
+            let list = [];
+            player.pawns.forEach((pawn, idx) => {
+                if (pawn.isFinished) return;
+
+                // Evdeki piyon sadece 6 ile çıkabilir
+                if (pawn.step === -1 && dice === 6) {
+                    list.push(idx);
+                } 
+                // Pistteki piyon ilerleyebilir mi?
+                else if (pawn.step >= 0) {
+                    let nextStep = pawn.step + dice;
+                    if (nextStep <= 56) { // 51 pist kare + 5 güvenli şerit karesi = maksimum 56
+                        list.push(idx);
+                    }
+                }
+            });
+            return list;
+        }
+
+        // PİYON HAREKET MANTIĞI VE KURAL SETLERİ
+        function onPawnClicked(player, pawnId) {
+            if (!rollDone || players[activeTurnIndex].color !== player.color) return;
+
+            let pawn = player.pawns[pawnId];
+            let moveableList = getMoveablePawns(player, diceVal);
+            if (!moveableList.includes(pawnId)) return;
+
+            // Parlamayı kaldır
+            moveableList.forEach(id => {
+                document.getElementById(`pawn-${player.color}-${id}`).classList.remove('movable');
+            });
+
+            let pawnEl = document.getElementById(`pawn-${player.color}-${pawnId}`);
+
+            // KURAL 1: EVDEKİ TAŞI 6 İLE ÇIKARMA
+            if (pawn.step === -1 && diceVal === 6) {
+                pawn.step = 0; 
+                relocatePawnOnScreen(player.color, pawnId, 0);
+                document.getElementById('sound-home').play();
+                
+                // 6 Atınca Yeniden Oynama Hakkı
+                rollDone = false;
+                triggerTurnSetup();
                 return;
             }
 
-            // Normal yolda ilerleme (Temsili düz ilerleme)
-            let currentRow = parseInt(pawnElement.parentElement.getAttribute('data-row'));
-            let currentCol = parseInt(pawnElement.parentElement.getAttribute('data-col'));
-            
-            // Piyonu haritada rastgele de olsa ileriye doğru kaydır
-            let nextRow = currentRow;
-            let nextCol = currentCol + (player.color === 'red' || player.color === 'green' ? 1 : -1);
-            
-            let nextCell = document.querySelector(`[data-row="${nextRow}"][data-col="${nextCol}"]`);
-            if(nextCell) {
-                nextCell.appendChild(pawnElement);
-                document.getElementById('sound-home').play();
+            // KURAL 2: PİSTTE VE GÜVENLİ YOLDA İLERLEME
+            if (pawn.step >= 0) {
+                pawn.step += diceVal;
+                relocatePawnOnScreen(player.color, pawnId, pawn.step);
+                
+                // 6 Atınca Yeniden Oynama Hakkı
+                if (diceVal === 6) {
+                    rollDone = false;
+                    triggerTurnSetup();
+                } else {
+                    switchTurn();
+                }
             }
-
-            nextTurn();
         }
 
-        function nextTurn() {
-            activeTurn = (activeTurn + 1) % players.length;
-            updateTurn();
+        // GÖRSEL OLARAK PİYONLARI YERLEŞTİRME VE ÇARPIŞMA (KIRMA) MANTIĞI
+        function relocatePawnOnScreen(color, pawnId, step) {
+            let pawnEl = document.getElementById(`pawn-${color}-${pawnId}`);
+            let conf = teamConfigs[color];
+            
+            // 1. TAM SAYI İLE BİTİŞE ULAŞTI MI?
+            if (step === 56) {
+                document.getElementById(`target-${color}`).appendChild(pawnEl);
+                players.find(p => p.color === color).pawns[pawnId].isFinished = true;
+                document.getElementById('sound-home').play();
+                checkVictoryCondition();
+                return;
+            }
+
+            let targetCellEl;
+
+            // 2. GÜVENLİ HEDEF YOLUNDA MI?
+            if (step > 50) {
+                let safeStep = step - 50; // 1, 2, 3, 4, 5
+                if (color === 'red')    targetCellEl = document.getElementById(`cell-7-${safeStep}`);
+                if (color === 'green')  targetCellEl = document.getElementById(`cell-${safeStep}-7`);
+                if (color === 'yellow') targetCellEl = document.getElementById(`cell-7-${14 - safeStep}`);
+                if (color === 'blue')   targetCellEl = document.getElementById(`cell-${14 - safeStep}-7`);
+            } 
+            // 3. NORMAL ORTAK PİST YOLUNDA MI?
+            else {
+                let actualTrackIndex = (conf.startTrackIdx + step) % 52;
+                let coord = trackCoordinates[actualTrackIndex];
+                targetCellEl = document.getElementById(`cell-${coord.r}-${coord.c}`);
+                
+                // GÜVENLİ ALAN KONTROLÜ: Yeni çıkan taş kalkış noktasındayken kıırılamaz
+                let isSafeSpot = (coord.r === conf.startR && coord.c === conf.startC);
+
+                // RAKİP TAŞLAMA (PİYON KIRMA) KONTROLÜ
+                if (targetCellEl.children.length > 0 && !isSafeSpot) {
+                    let opponentPawn = targetCellEl.children[0];
+                    if (!opponentPawn.id.includes(`pawn-${color}`)) {
+                        // Taş kırma gerçekleşti!
+                        document.getElementById('sound-eat').play();
+                        
+                        let opColor = opponentPawn.id.split('-')[1];
+                        let opPawnId = opponentPawn.id.split('-')[2];
+                        
+                        // Rakip piyonu evine (yuvasına) geri postala
+                        document.getElementById(`pocket-${opColor}-${opPawnId}`).appendChild(opponentPawn);
+                        
+                        let opPlayer = players.find(p => p.color === opColor);
+                        opPlayer.pawns[opPawnId].step = -1;
+                        alert(`💥 Taşlama! ${color.toUpperCase()} takımı, ${opColor.toUpperCase()} takımının piyonunu kırdı!`);
+                    }
+                }
+            }
+
+            if (targetCellEl) {
+                targetCellEl.appendChild(pawnEl);
+            }
+        }
+
+        function switchTurn() {
+            activeTurnIndex = (activeTurnIndex + 1) % players.length;
+            triggerTurnSetup();
+        }
+
+        function checkVictoryCondition() {
+            let activePlayer = players[activeTurnIndex];
+            let allFinished = activePlayer.pawns.every(p => p.isFinished);
+            if (allFinished) {
+                alert(`🏆 TEBRİKLER! ${activePlayer.name.toUpperCase()} tüm piyonları hedefe ulaştırarak oyunu KAZANDI!`);
+                location.reload();
+            }
         }
     </script>
 </body>

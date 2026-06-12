@@ -377,11 +377,11 @@
         <button class="wood-btn red-wood" onclick="handleMainMenu()">Sayfayı Yenile</button>
     </div>
 
-    <!-- SES DOSYALARI -->
-    <audio id="sound-dice" src="https://assets.mixkit.co/active_storage/sfx/2014/2014-84.wav" preload="auto"></audio>
-    <audio id="sound-eat" src="https://assets.mixkit.co/active_storage/sfx/2511/2511-84.wav" preload="auto"></audio> 
-    <audio id="sound-home" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-84.wav" preload="auto"></audio>
-    <audio id="sound-victory" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-84.wav" preload="auto"></audio>
+    <!-- SES DOSYALARI (Gelişmiş Web Audio Api Uyumlu Yedekli Linkler) -->
+    <audio id="sound-dice" src="https://assets.mixkit.co/active_storage/sfx/2014/2014-84.wav" preload="auto" crossorigin="anonymous"></audio>
+    <audio id="sound-eat" src="https://assets.mixkit.co/active_storage/sfx/2511/2511-84.wav" preload="auto" crossorigin="anonymous"></audio> 
+    <audio id="sound-home" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-84.wav" preload="auto" crossorigin="anonymous"></audio>
+    <audio id="sound-victory" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-84.wav" preload="auto" crossorigin="anonymous"></audio>
 
     <script>
         let players = [];
@@ -393,8 +393,9 @@
         let turnTimeLeft = 10;
         let turnTimerInterval = null;
         let isWaitingForPawnSelection = false;
+        let audioContextUnlocked = false;
 
-        // Küresel pist haritası (Kafaları karıştırmayacak net 52 karelik döngü pisti)
+        // Görsele (1000191185.jpg) göre tam senkronize edilmiş 52 karelik pist koordinatları
         const trackCoordinates = [
             {r:6, c:1}, {r:6, c:2}, {r:6, c:3}, {r:6, c:4}, {r:6, c:5},
             {r:5, c:6}, {r:4, c:6}, {r:3, c:6}, {r:2, c:6}, {r:1, c:6}, {r:0, c:6},
@@ -410,8 +411,7 @@
             {r:7, c:0}, {r:6, c:0}
         ];
 
-        // TAKIM BAŞLANGIÇ AYARLARI (Yıldızlı karelerin pist üzerindeki tam indeksleri)
-        // Red = 0 ({r:6, c:1}), Green = 12 ({r:0, c:8}), Yellow = 26 ({r:8, c:13}), Blue = 38 ({r:14, c:6})
+        // GÖRSELDEKİ BİREBİR DOĞRU YILDIZLI BAŞLANGIÇ NOKTALARI (Kırmızı=0, Yeşil=12, Sarı=26, Mavi=38)
         const teamConfigs = {
             'red':    { startTrackIdx: 0,  colorClass: 'c-red',    startR: 6, startC: 1 },
             'green':  { startTrackIdx: 12, colorClass: 'c-green',  startR: 0, startC: 8 },
@@ -419,8 +419,25 @@
             'blue':   { startTrackIdx: 38, colorClass: 'c-blue',   startR: 14, startC: 6 }  
         };
 
-        const globalStarTrackIndices = [0, 12, 26, 38, 8, 21, 34, 47];
+        // Görseldeki tüm yıldızlı karelerin pist üzerindeki indeks karşılıkları
+        const globalStarTrackIndices = [0, 8, 12, 21, 26, 34, 38, 47];
         const diceFaces = ["", "⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
+
+        // Tarayıcıların Autoplay Ses Engelini Kaldırma Köprüsü
+        function unlockAudioContext() {
+            if (audioContextUnlocked) return;
+            ['sound-dice', 'sound-eat', 'sound-home', 'sound-victory'].forEach(id => {
+                let audio = document.getElementById(id);
+                if (audio) {
+                    audio.play().then(() => { audio.pause(); audio.currentTime = 0; }).catch(e => console.log("Ses aktivasyon bekliyor"));
+                }
+            });
+            audioContextUnlocked = true;
+        }
+
+        // Tıklama anında ses kilidini aç
+        document.addEventListener('click', unlockAudioContext, { once: false });
+        document.addEventListener('touchstart', unlockAudioContext, { once: false });
 
         function unlockAndPlayAudio(audioId) {
             let soundsAllowed = document.getElementById('chk-play-sounds').checked;
@@ -431,7 +448,9 @@
                 audioEl.currentTime = 0;
                 let playPromise = audioEl.play();
                 if (playPromise !== undefined) {
-                    playPromise.catch(() => {});
+                    playPromise.catch((err) => {
+                        console.log("Tarayıcı engeli sebebiyle ses çalınamadı, etkileşim gerekiyor.", err);
+                    });
                 }
             }
         }
@@ -508,23 +527,24 @@
                     cell.className = "cell c-white";
                     cell.id = `cell-${r}-${c}`;
 
+                    // Renkli güvenli bitiş yolları
                     if (r === 7 && c >= 1 && c <= 5) cell.className = "cell c-red";
                     if (c === 7 && r >= 1 && r <= 5) cell.className = "cell c-green";
                     if (c === 7 && r >= 9 && r <= 13) cell.className = "cell c-blue";
                     if (r === 7 && c >= 9 && c <= 13) cell.className = "cell c-yellow";
 
+                    // GÖRSELDEKİ BİREBİR RENKLİ BAŞLANGIÇ YILDIZLARI
                     if (r === 6 && c === 1) cell.className = "cell c-red star-cell star-red";
                     if (r === 0 && c === 8) cell.className = "cell c-green star-cell star-green";
                     if (r === 8 && c === 13) cell.className = "cell c-yellow star-cell star-yellow";
                     if (r === 14 && c === 6) cell.className = "cell c-blue star-cell star-blue";
 
-                    trackCoordinates.forEach((coord, index) => {
-                        if (coord.r === r && coord.c === c && globalStarTrackIndices.includes(index)) {
-                            if (!cell.classList.contains('star-cell')) {
-                                cell.classList.add('star-cell');
-                            }
+                    // Diğer gri renkli yardımcı yıldızlar (Görseldeki yerleri)
+                    if ((r === 2 && c === 6) || (r === 6 && c === 12) || (r === 12 && c === 8) || (r === 8 && c === 2)) {
+                        if (!cell.classList.contains('star-cell')) {
+                            cell.classList.add('star-cell');
                         }
-                    });
+                    }
 
                     boardEl.appendChild(cell);
                 }
@@ -563,11 +583,7 @@
         }
 
         function initLudoGame() {
-            ['sound-dice', 'sound-eat', 'sound-home', 'sound-victory'].forEach(id => {
-                let a = document.getElementById(id);
-                if(a) { a.play().then(() => a.pause()).catch(() => {}); }
-            });
-
+            unlockAudioContext();
             renderLudoBoard();
             players = [];
 
@@ -667,6 +683,7 @@
             let cube = document.getElementById('dice-cube');
             btn.disabled = true;
             cube.classList.add('dice-rolling');
+            
             unlockAndPlayAudio('sound-dice');
 
             let interval = setInterval(() => {
@@ -684,7 +701,6 @@
 
                 if (rolled === 6) {
                     consecutiveSixes++;
-                    // Kural: Üst üste 3 kez 6 gelirse hiçbir uyarı yazısı vermeden sıra anında diğerine geçer!
                     if (consecutiveSixes === 3) {
                         consecutiveSixes = 0;
                         dicePool = [];
@@ -729,7 +745,6 @@
             if (!p.isBot) {
                 let outsidePawns = p.pawns.filter(pwn => pwn.step >= 0 && !pwn.isFinished);
                 
-                // Sadece 1 geçerli taş varsa ve yuvadan yeni çıkış yoksa otomatik oynat
                 if (outsidePawns.length === 1 && moveablePawns.length === 1 && currentDice !== 6) {
                     setTimeout(() => { onPawnClicked(p, moveablePawns[0]); }, 500);
                     return;
@@ -788,7 +803,6 @@
             clearInterval(turnTimerInterval); 
             document.querySelectorAll('.pawn').forEach(el => el.classList.remove('movable'));
 
-            // Eğer zar 6 değilse ve normal bir hamle yapıldıysa üst üste 6 sayacını sıfırla
             if (currentDice !== 6) {
                 consecutiveSixes = 0;
             }
@@ -797,7 +811,7 @@
             updateDicePoolView();
 
             if (pawn.step === -1 && currentDice === 6) {
-                pawn.step = 0; // Doğrudan başlangıç hücresine (0. adım)
+                pawn.step = 0; 
                 relocatePawnOnScreen(player.color, pawnId, 0);
                 unlockAndPlayAudio('sound-home');
                 highlightMoveablePawns();
@@ -834,13 +848,14 @@
                 if (color === 'yellow') targetCellEl = document.getElementById(`cell-7-${14 - safeStep}`);
             } 
             else {
-                // HATA DÜZELTME: Modulo aritmetiği ile tam renkli/yıldızlı hücreden başlatma
                 let actualTrackIndex = (conf.startTrackIdx + step) % 52;
                 let coord = trackCoordinates[actualTrackIndex];
                 targetCellEl = document.getElementById(`cell-${coord.r}-${coord.c}`);
                 
                 let isStartSpot = (coord.r === conf.startR && coord.c === conf.startC);
-                let isStarSpot = globalStarTrackIndices.includes(actualTrackIndex);
+                
+                // Yıldız kontrol endeksini koordinat bazlı ve dinamik yaptık
+                let isStarSpot = targetCellEl && targetCellEl.classList.contains('star-cell');
 
                 if (targetCellEl && targetCellEl.children.length > 0) {
                     let existingPawns = Array.from(targetCellEl.children);
@@ -915,4 +930,3 @@
     </script>
 </body>
 </html>
-      

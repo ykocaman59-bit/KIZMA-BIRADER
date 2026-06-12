@@ -30,7 +30,7 @@
         #game-container { display: none; max-width: 480px; margin: 0 auto; position: relative; }
         #status-bar { background: #2c3e50; padding: 10px; border-radius: 6px; margin-bottom: 8px; font-weight: bold; font-size: 14px; border: 1px solid #34495e; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); }
 
-        /* PRO PROFİL PANELLERİ (Görsel 1000191133.jpg esintisi) */
+        /* PRO PROFİL PANELLERİ */
         .player-profile-card {
             position: absolute;
             background: rgba(44, 62, 80, 0.95);
@@ -69,11 +69,11 @@
         }
         .profile-pawn-preview { font-size: 10px; opacity: 0.8; }
 
-        /* Profil Konumlandırmaları */
-        .card-green  { top: -45px; left: 0; border-color: #2ecc71; }
-        .card-yellow { top: -45px; right: 0; border-color: #f1c40f; }
-        .card-red    { bottom: -50px; left: 0; border-color: #ff4d4d; }
-        .card-blue   { bottom: -50px; right: 0; border-color: #3399ff; }
+        /* Köşe Profil Yerleşimleri */
+        .card-red    { top: -45px; left: 0; border-color: #ff4d4d; }
+        .card-green  { top: -45px; right: 0; border-color: #2ecc71; }
+        .card-blue   { bottom: -50px; left: 0; border-color: #3399ff; }
+        .card-yellow { bottom: -50px; right: 0; border-color: #f1c40f; }
 
         /* HARİTA KUTUSU VE TAHTA */
         .board-wrapper { position: relative; margin-top: 50px; margin-bottom: 55px; }
@@ -99,16 +99,20 @@
         .c-yellow { background: #f1c40f !important; }
         .c-white { background: #ffffff !important; }
 
+        /* Yıldız Simgesi */
         .star-cell::before {
             content: "★";
             font-size: 16px;
             color: #7f8c8d;
             position: absolute;
-            opacity: 0.6;
             font-weight: bold;
         }
+        .star-red::before { color: #fff !important; }
+        .star-green::before { color: #fff !important; }
+        .star-yellow::before { color: #fff !important; }
+        .star-blue::before { color: #fff !important; }
 
-        /* Ev Kaleleri */
+        /* Ev Kaleleri (6x6 Bloklar) */
         .nest { grid-column: span 6; grid-row: span 6; display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 12px; padding: 14px; position: relative; }
         .nest-red { background: #ff4d4d; }
         .nest-green { background: #2ecc71; }
@@ -127,7 +131,7 @@
         .target-yellow { right: 5%; top: 35%; }
         .target-blue { left: 35%; bottom: 5%; }
 
-        /* PİYONLAR VE SABİT ÖLÇÜ KONTROLÜ (Görsel 1000191132.jpg hatası çözümü) */
+        /* PİYONLAR VE SABİT ÖLÇÜ KONTROLÜ */
         .pawn {
             width: 80% !important;
             height: 80% !important;
@@ -172,7 +176,7 @@
         <h3 class="menu-title">⚙️ Oyuncu & Taş Ayarları</h3>
         
         <div class="setup-row p1">
-            <span>1. Takım (Kırmızı):</span>
+            <span>1. Takım (Kırmızı - Sol Üst):</span>
             <div class="inputs-container">
                 <input type="text" id="p1-name" value="Player 1">
                 <select id="p1-shape">
@@ -186,25 +190,10 @@
             </div>
         </div>
 
-        <div class="setup-row p2">
-            <span>2. Takım (Mavi):</span>
-            <div class="inputs-container">
-                <input type="text" id="p2-name" value="Player 2">
-                <select id="p2-shape" default="•">
-                    <option value="•">Standart (•)</option>
-                    <option value="👑">Taç (👑)</option>
-                    <option value="😎">Gözlük (😎)</option>
-                    <option value="⚙️">Çark (⚙️)</option>
-                    <option value="💀">Kafatası (💀)</option>
-                </select>
-                <label class="bot-lbl"><input type="checkbox" id="p2-bot"> Bot</label>
-            </div>
-        </div>
-
         <div class="setup-row p3">
-            <label style="cursor:pointer;"><input type="checkbox" id="p3-active" onchange="managePlayerRow(3)"> 3. Takımı Aç (Yeşil)</label>
-            <div id="p3-inputs" class="inputs-container" style="display: none;">
-                <input type="text" id="p3-name" value="Player 3">
+            <span>2. Takım (Yeşil - Sağ Üst):</span>
+            <div class="inputs-container">
+                <input type="text" id="p3-name" value="Player 2">
                 <select id="p3-shape">
                     <option value="•">Standart (•)</option>
                     <option value="👑">Taç (👑)</option>
@@ -216,9 +205,24 @@
             </div>
         </div>
 
+        <div class="setup-row p2">
+            <label style="cursor:pointer;"><input type="checkbox" id="p2-active" checked onchange="managePlayerRow(2)"> 3. Takımı Aç (Mavi - Sol Alt)</label>
+            <div id="p2-inputs" class="inputs-container">
+                <input type="text" id="p2-name" value="Player 3">
+                <select id="p2-shape">
+                    <option value="•">Standart (•)</option>
+                    <option value="👑">Taç (👑)</option>
+                    <option value="😎">Gözlük (😎)</option>
+                    <option value="⚙️">Çark (⚙️)</option>
+                    <option value="💀">Kafatası (💀)</option>
+                </select>
+                <label class="bot-lbl"><input type="checkbox" id="p2-bot"> Bot</label>
+            </div>
+        </div>
+
         <div class="setup-row p4">
-            <label style="cursor:pointer;"><input type="checkbox" id="p4-active" onchange="managePlayerRow(4)"> 4. Takımı Aç (Sarı)</label>
-            <div id="p4-inputs" class="inputs-container" style="display: none;">
+            <label style="cursor:pointer;"><input type="checkbox" id="p4-active" checked onchange="managePlayerRow(4)"> 4. Takımı Aç (Sarı - Sağ Alt)</label>
+            <div id="p4-inputs" class="inputs-container">
                 <input type="text" id="p4-name" value="Player 4">
                 <select id="p4-shape">
                     <option value="•">Standart (•)</option>
@@ -239,22 +243,22 @@
         <div id="status-bar">Sıra Kimde?</div>
         
         <div class="board-wrapper">
-            <!-- Profil Kartları (Dinamik İsim ve İnsan Kafası) -->
-            <div class="player-profile-card card-green" id="profile-green" style="display:none;">
-                <div class="profile-avatar">👤</div>
-                <div class="profile-info"><span id="lbl-green-name">-</span><span class="profile-pawn-preview" id="lbl-green-shape">-</span></div>
-            </div>
-            <div class="player-profile-card card-yellow" id="profile-yellow" style="display:none;">
-                <div class="profile-avatar">👤</div>
-                <div class="profile-info"><span id="lbl-yellow-name">-</span><span class="profile-pawn-preview" id="lbl-yellow-shape">-</span></div>
-            </div>
+            <!-- Profil Kartları (Görsel 1000191133_2.jpg Köşe Yerleşimi) -->
             <div class="player-profile-card card-red" id="profile-red" style="display:none;">
                 <div class="profile-avatar">👤</div>
                 <div class="profile-info"><span id="lbl-red-name">-</span><span class="profile-pawn-preview" id="lbl-red-shape">-</span></div>
             </div>
+            <div class="player-profile-card card-green" id="profile-green" style="display:none;">
+                <div class="profile-avatar">👤</div>
+                <div class="profile-info"><span id="lbl-green-name">-</span><span class="profile-pawn-preview" id="lbl-green-shape">-</span></div>
+            </div>
             <div class="player-profile-card card-blue" id="profile-blue" style="display:none;">
                 <div class="profile-avatar">👤</div>
                 <div class="profile-info"><span id="lbl-blue-name">-</span><span class="profile-pawn-preview" id="lbl-blue-shape">-</span></div>
+            </div>
+            <div class="player-profile-card card-yellow" id="profile-yellow" style="display:none;">
+                <div class="profile-avatar">👤</div>
+                <div class="profile-info"><span id="lbl-yellow-name">-</span><span class="profile-pawn-preview" id="lbl-yellow-shape">-</span></div>
             </div>
 
             <div id="ludo-board"></div>
@@ -280,6 +284,7 @@
         let rollDone = false;
         let consecutiveSixes = 0;
         
+        // 1000191133_2.jpg görseline göre sıfırdan eşlenen 52 ortak pist koordinatı
         const trackCoordinates = [
             {r:6, c:1}, {r:6, c:2}, {r:6, c:3}, {r:6, c:4}, {r:6, c:5},
             {r:5, c:6}, {r:4, c:6}, {r:3, c:6}, {r:2, c:6}, {r:1, c:6}, {r:0, c:6},
@@ -295,12 +300,16 @@
             {r:7, c:0}, {r:6, c:0}
         ];
 
+        // Görsel 1000191133_2.jpg'deki tam yıldız yerleşim indisleri ve ev çıkışları
         const teamConfigs = {
-            'red':    { startTrackIdx: 0,  colorClass: 'c-red',    startR: 6, startC: 1,  starTrackIdx: 9 },
-            'green':  { startTrackIdx: 12, colorClass: 'c-green',  startR: 1, startC: 8,  starTrackIdx: 21 },
-            'yellow': { startTrackIdx: 24, colorClass: 'c-yellow', startR: 8, startC: 13, starTrackIdx: 33 },
-            'blue':   { startTrackIdx: 36, colorClass: 'c-blue',   startR: 13, startC: 6, starTrackIdx: 45 }
+            'red':    { startTrackIdx: 0,  colorClass: 'c-red',    startR: 6, startC: 1,  starTrackIdx: 0 },
+            'green':  { startTrackIdx: 12, colorClass: 'c-green',  startR: 1, startC: 8,  starTrackIdx: 12 },
+            'yellow': { startTrackIdx: 24, colorClass: 'c-yellow', startR: 8, startC: 13, starTrackIdx: 24 },
+            'blue':   { startTrackIdx: 36, colorClass: 'c-blue',   startR: 13, startC: 6, starTrackIdx: 36 }
         };
+
+        // Yol üstündeki bağımsız gri yıldızların harita indisleri
+        const globalStarTrackIndices = [8, 21, 34, 47];
 
         const diceFaces = ["", "⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
 
@@ -309,18 +318,18 @@
             document.getElementById(`p${num}-inputs`).style.display = isChecked ? 'flex' : 'none';
         }
 
+        // TAM OLARAK 1000191133_2.jpg GÖRSELİNDEKİ HARİTA ÇİZİMİ
         function renderLudoBoard() {
             const boardEl = document.getElementById('ludo-board');
             boardEl.innerHTML = "";
 
-            const starCoords = Object.values(teamConfigs).map(conf => trackCoordinates[conf.starTrackIdx]);
-
             for (let r = 0; r < 15; r++) {
                 for (let c = 0; c < 15; c++) {
-                    if (r < 6 && c < 6) { if (r === 0 && c === 0) buildNestElement(boardEl, 'green', 'nest-green'); continue; }
-                    if (r < 6 && c > 8) { if (r === 0 && c === 9) buildNestElement(boardEl, 'yellow', 'nest-yellow'); continue; }
-                    if (r > 8 && c < 6) { if (r === 9 && c === 0) buildNestElement(boardEl, 'red', 'nest-red'); continue; }
-                    if (r > 8 && c > 8) { if (r === 9 && c === 9) buildNestElement(boardEl, 'blue', 'nest-blue'); continue; }
+                    // Ev Blokları yerleşimi (Sol Üst: Kırmızı, Sağ Üst: Yeşil, Sol Alt: Mavi, Sağ Alt: Sarı)
+                    if (r < 6 && c < 6) { if (r === 0 && c === 0) buildNestElement(boardEl, 'red', 'nest-red'); continue; }
+                    if (r < 6 && c > 8) { if (r === 0 && c === 9) buildNestElement(boardEl, 'green', 'nest-green'); continue; }
+                    if (r > 8 && c < 6) { if (r === 9 && c === 0) buildNestElement(boardEl, 'blue', 'nest-blue'); continue; }
+                    if (r > 8 && c > 8) { if (r === 9 && c === 9) buildNestElement(boardEl, 'yellow', 'nest-yellow'); continue; }
 
                     if (r >= 6 && r <= 8 && c >= 6 && c <= 8) {
                         if (r === 6 && c === 6) buildCenterTriangles(boardEl);
@@ -331,18 +340,24 @@
                     cell.className = "cell c-white";
                     cell.id = `cell-${r}-${c}`;
 
+                    // Güvenli iç şerit yolları koordinatları (Görseldeki tam hizalama)
                     if (r === 7 && c >= 1 && c <= 5) cell.className = "cell c-red";
                     if (c === 7 && r >= 1 && r <= 5) cell.className = "cell c-green";
-                    if (r === 7 && c >= 9 && c <= 13) cell.className = "cell c-yellow";
                     if (c === 7 && r >= 9 && r <= 13) cell.className = "cell c-blue";
+                    if (r === 7 && c >= 9 && c <= 13) cell.className = "cell c-yellow";
 
-                    if (r === 6 && c === 1) cell.className = "cell c-red";
-                    if (r === 1 && c === 8) cell.className = "cell c-green";
-                    if (r === 8 && c === 13) cell.className = "cell c-yellow";
-                    if (r === 13 && c === 6) cell.className = "cell c-blue";
+                    // Çıkış kareleri renklendirmesi
+                    if (r === 6 && c === 1) cell.className = "cell c-red star-cell star-red";
+                    if (r === 1 && c === 8) cell.className = "cell c-green star-cell star-green";
+                    if (r === 8 && c === 13) cell.className = "cell c-yellow star-cell star-yellow";
+                    if (r === 13 && c === 6) cell.className = "cell c-blue star-cell star-blue";
 
-                    let isStar = starCoords.some(coord => coord.r === r && coord.c === c);
-                    if (isStar) cell.classList.add('star-cell');
+                    // Yol üzerindeki ortak gri yıldız yerleşimleri (9. kare mantığı)
+                    trackCoordinates.forEach((coord, index) => {
+                        if (coord.r === r && coord.c === c && globalStarTrackIndices.includes(index)) {
+                            cell.classList.add('star-cell');
+                        }
+                    });
 
                     boardEl.appendChild(cell);
                 }
@@ -384,34 +399,37 @@
             renderLudoBoard();
             players = [];
 
-            // Profil kartlarını gizle önce
             document.querySelectorAll('.player-profile-card').forEach(c => c.style.display = 'none');
 
-            // Oyuncu verilerini topla ve Şekilleri entegre et
+            // 1. Oyuncu (Kırmızı)
             let p1Name = document.getElementById('p1-name').value.trim() || "Player 1";
             let p1Shape = document.getElementById('p1-shape').value;
-            players.push({ id: 1, name: p1Name, color: 'red', label: 'Kırmızı', shape: p1Shape, isBot: document.getElementById('p1-bot').checked });
+            players.push({ id: 1, name: p1Name, color: 'red', shape: p1Shape, isBot: document.getElementById('p1-bot').checked });
             setupProfileCard('red', p1Name, p1Shape);
 
-            let p2Name = document.getElementById('p2-name').value.trim() || "Player 2";
-            let p2Shape = document.getElementById('p2-shape').value;
-            players.push({ id: 2, name: p2Name, color: 'blue', label: 'Mavi', shape: p2Shape, isBot: document.getElementById('p2-bot').checked });
-            setupProfileCard('blue', p2Name, p2Shape);
+            // 2. Oyuncu (Yeşil)
+            let p3Name = document.getElementById('p3-name').value.trim() || "Player 2";
+            let p3Shape = document.getElementById('p3-shape').value;
+            players.push({ id: 2, name: p3Name, color: 'green', shape: p3Shape, isBot: document.getElementById('p3-bot').checked });
+            setupProfileCard('green', p3Name, p3Shape);
 
-            if (document.getElementById('p3-active').checked) {
-                let p3Name = document.getElementById('p3-name').value.trim() || "Player 3";
-                let p3Shape = document.getElementById('p3-shape').value;
-                players.push({ id: 3, name: p3Name, color: 'green', label: 'Yeşil', shape: p3Shape, isBot: document.getElementById('p3-bot').checked });
-                setupProfileCard('green', p3Name, p3Shape);
+            // 3. Oyuncu (Mavi)
+            if (document.getElementById('p2-active').checked) {
+                let p2Name = document.getElementById('p2-name').value.trim() || "Player 3";
+                let p2Shape = document.getElementById('p2-shape').value;
+                players.push({ id: 3, name: p2Name, color: 'blue', shape: p2Shape, isBot: document.getElementById('p2-bot').checked });
+                setupProfileCard('blue', p2Name, p2Shape);
             }
+
+            // 4. Oyuncu (Sarı)
             if (document.getElementById('p4-active').checked) {
                 let p4Name = document.getElementById('p4-name').value.trim() || "Player 4";
                 let p4Shape = document.getElementById('p4-shape').value;
-                players.push({ id: 4, name: p4Name, color: 'yellow', label: 'Sarı', shape: p4Shape, isBot: document.getElementById('p4-bot').checked });
+                players.push({ id: 4, name: p4Name, color: 'yellow', shape: p4Shape, isBot: document.getElementById('p4-bot').checked });
                 setupProfileCard('yellow', p4Name, p4Shape);
             }
 
-            // Piyonları Seçilen Şekille Üretme
+            // Piyonların dinamik olarak basılması
             players.forEach(p => {
                 p.pawns = [];
                 for (let i = 0; i < 4; i++) {
@@ -419,7 +437,7 @@
                     let pawnEl = document.createElement('div');
                     pawnEl.className = `pawn pawn-${p.color}`;
                     pawnEl.id = `pawn-${p.color}-${i}`;
-                    pawnEl.innerText = p.shape === '•' ? '' : p.shape; // Standart ise boş kalsın nokta dursun
+                    pawnEl.innerText = p.shape === '•' ? '' : p.shape;
                     pawnEl.onclick = () => onPawnClicked(p, i);
                     document.getElementById(`pocket-${p.color}-${i}`).appendChild(pawnEl);
                 }
@@ -447,7 +465,6 @@
             status.innerHTML = `Sıra: <span style="color:${p.color==='yellow'?'#f1c40f':(p.color==='blue'?'#3399ff':'#ff4d4d')}">${p.name}</span> takımında!`;
             rollDone = false;
 
-            // Aktif oyuncunun kartını parlatma
             document.querySelectorAll('.player-profile-card').forEach(c => c.style.boxShadow = '0 4px 8px rgba(0,0,0,0.4)');
             document.getElementById(`profile-${p.color}`).style.boxShadow = '0 0 15px #fff';
 
@@ -559,20 +576,22 @@
 
             let targetCellEl;
 
+            // Güvenli iç bitiş kulvarı mantığı
             if (step > 50) {
                 let safeStep = step - 50; 
                 if (color === 'red')    targetCellEl = document.getElementById(`cell-7-${safeStep}`);
                 if (color === 'green')  targetCellEl = document.getElementById(`cell-${safeStep}-7`);
-                if (color === 'yellow') targetCellEl = document.getElementById(`cell-7-${14 - safeStep}`);
                 if (color === 'blue')   targetCellEl = document.getElementById(`cell-${14 - safeStep}-7`);
+                if (color === 'yellow') targetCellEl = document.getElementById(`cell-7-${14 - safeStep}`);
             } 
             else {
                 let actualTrackIndex = (conf.startTrackIdx + step) % 52;
                 let coord = trackCoordinates[actualTrackIndex];
                 targetCellEl = document.getElementById(`cell-${coord.r}-${coord.c}`);
                 
+                // Güvenlik koruması kontrolleri (Kendi çıkışı mı yoksa haritadaki global yıldız kareleri mi?)
                 let isStartSpot = (coord.r === conf.startR && coord.c === conf.startC);
-                let isStarSpot = (actualTrackIndex === conf.starTrackIdx);
+                let isStarSpot = globalStarTrackIndices.includes(actualTrackIndex) || (actualTrackIndex === conf.starTrackIdx);
 
                 if (targetCellEl.children.length > 0) {
                     let existingPawns = Array.from(targetCellEl.children);
@@ -604,7 +623,6 @@
             }
         }
 
-        // TAŞLARIN BOYUTUNU VE ÜST ÜSTE BİNME KOORDİNATLARINI EKRANA SABİTLEYEN GÜVENLİ FONKSİYON
         function reorganizeCellStack(cellEl) {
             if (!cellEl || cellEl.classList.contains('pocket') || cellEl.classList.contains('home-target-zone')) return;
             
@@ -616,11 +634,9 @@
                 pawns[0].style.height = "80%";
                 pawns[0].style.transform = "none";
             } else {
-                // Taşlar üst üste bindiğinde hücre dışına taşmasınlar diye küçültüyoruz
                 pawns.forEach((pawn, idx) => {
                     pawn.style.width = "50%";
                     pawn.style.height = "50%";
-                    // Üst üste yığılma efekti (Kayma açısı düşürüldü, taşma önlendi)
                     pawn.style.transform = `translate(${idx * 3}px, ${idx * 3}px)`;
                 });
             }
@@ -641,3 +657,4 @@
     </script>
 </body>
 </html>
+           

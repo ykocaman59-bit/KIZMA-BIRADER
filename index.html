@@ -160,11 +160,55 @@
         @keyframes bounce { from { transform: scale(1); } to { transform: scale(1.15); } }
 
         /* PANEL */
-        #control-panel { display: flex; justify-content: space-between; align-items: center; background: #2c3e50; padding: 12px; border-radius: 8px; border: 1px solid #34495e; }
+        #control-panel { display: flex; justify-content: space-between; align-items: center; background: #2c3e50; padding: 12px; border-radius: 8px; border: 1px solid #34495e; position: relative; }
         #dice-btn { background: #e67e22; color: white; border: none; padding: 10px 20px; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer; box-shadow: 0 3px 0 #d35400; width: 45%; }
         #dice-btn:disabled { background: #7f8c8d; box-shadow: none; cursor: not-allowed; }
-        #dice-result-box { width: 45%; display: flex; justify-content: center; align-items: center; gap: 10px; font-size: 18px; font-weight: bold; }
-        .dice-graphic { width: 40px; height: 40px; background: white; border-radius: 6px; border: 2px solid #333; display: flex; justify-content: center; align-items: center; font-size: 24px; color: #000; box-shadow: 0 3px 5px rgba(0,0,0,0.3); }
+        #dice-result-box { width: 45%; display: flex; justify-content: center; align-items: center; gap: 10px; font-size: 16px; font-weight: bold; }
+        
+        /* Gelişmiş Zar Çevrilme Efekti */
+        .dice-graphic { 
+            width: 42px; 
+            height: 42px; 
+            background: white; 
+            border-radius: 6px; 
+            border: 2px solid #333; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            font-size: 26px; 
+            color: #000; 
+            box-shadow: 0 3px 5px rgba(0,0,0,0.3); 
+            transition: transform 0.4s ease;
+        }
+        .dice-rolling { animation: rollAnim 0.4s linear infinite; }
+        @keyframes rollAnim {
+            0% { transform: rotate(0deg) scale(0.9); background: #eee; }
+            50% { transform: rotate(180deg) scale(1.1); background: #ddd; }
+            100% { transform: rotate(360deg) scale(0.9); background: #eee; }
+        }
+
+        #dice-pool-view { font-size: 12px; color: #f1c40f; margin-top: 4px; display: block; width: 100%; text-align: left; padding-left: 5px; font-family: monospace; }
+
+        /* SEÇENEKLER / AYARLAR MENÜSÜ PANELİ (DAMA TARZI) */
+        #menu-trigger-btn { background: #34495e; border: none; color: white; font-size: 22px; padding: 6px 12px; border-radius: 4px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        
+        #ingame-popup-menu { 
+            display: none; 
+            position: fixed; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            background: rgba(44, 62, 80, 0.98); 
+            border: 3px solid #f1c40f; 
+            padding: 20px; 
+            border-radius: 12px; 
+            z-index: 1000; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            width: 280px;
+        }
+        .popup-btn { background: #e74c3c; color: white; border: none; padding: 10px; width: 100%; font-size: 16px; font-weight: bold; border-radius: 6px; margin-bottom: 10px; cursor: pointer; }
+        .popup-btn.blue-btn { background: #3498db; }
+        .popup-btn.close-btn { background: #7f8c8d; margin-bottom: 0; }
     </style>
 </head>
 <body>
@@ -243,7 +287,7 @@
         <div id="status-bar">Sıra Kimde?</div>
         
         <div class="board-wrapper">
-            <!-- Profil Kartları (Görsel 1000191133_2.jpg Köşe Yerleşimi) -->
+            <!-- Profil Kartları -->
             <div class="player-profile-card card-red" id="profile-red" style="display:none;">
                 <div class="profile-avatar">👤</div>
                 <div class="profile-info"><span id="lbl-red-name">-</span><span class="profile-pawn-preview" id="lbl-red-shape">-</span></div>
@@ -267,10 +311,24 @@
         <div id="control-panel">
             <button id="dice-btn" onclick="executeDiceRoll()">Zar At 🎲</button>
             <div id="dice-result-box">
-                <span>Zar:</span>
-                <div id="dice-cube" class="dice-graphic">-</div>
+                <div style="display:flex; flex-direction:column; align-items:center; width:100%;">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <span>Zar:</span>
+                        <div id="dice-cube" class="dice-graphic">-</div>
+                    </div>
+                    <div id="dice-pool-view">Kalan Hamleler: []</div>
+                </div>
             </div>
+            <button id="menu-trigger-btn" onclick="togglePopup(true)">☰</button>
         </div>
+    </div>
+
+    <!-- DAMA TARZI AYARLAR PENCERESİ -->
+    <div id="ingame-popup-menu">
+        <h3 style="color:#f1c40f; margin-bottom:15px;">Seçenekler</h3>
+        <button class="popup-btn blue-btn" onclick="handleNewGame()">Yeni Oyun</button>
+        <button class="popup-btn" onclick="handleMainMenu()">Ana Menü</button>
+        <button class="popup-btn close-btn" onclick="togglePopup(false)">Kapat</button>
     </div>
 
     <audio id="sound-dice" src="https://assets.mixkit.co/active_storage/sfx/2014/2014-84.wav"></audio>
@@ -280,11 +338,11 @@
     <script>
         let players = [];
         let activeTurnIndex = 0;
-        let diceVal = 0;
+        let dicePool = []; // Biriken zarların listesi
         let rollDone = false;
         let consecutiveSixes = 0;
+        let hasEatenThisTurn = false; // Bu el rakip taş yenip yenmediğinin kontrolü
         
-        // 1000191133_2.jpg görseline göre sıfırdan eşlenen 52 ortak pist koordinatı
         const trackCoordinates = [
             {r:6, c:1}, {r:6, c:2}, {r:6, c:3}, {r:6, c:4}, {r:6, c:5},
             {r:5, c:6}, {r:4, c:6}, {r:3, c:6}, {r:2, c:6}, {r:1, c:6}, {r:0, c:6},
@@ -300,32 +358,41 @@
             {r:7, c:0}, {r:6, c:0}
         ];
 
-        // Görsel 1000191133_2.jpg'deki tam yıldız yerleşim indisleri ve ev çıkışları
+        // Eşleşen mutlak ilk çıkış noktaları
         const teamConfigs = {
             'red':    { startTrackIdx: 0,  colorClass: 'c-red',    startR: 6, startC: 1,  starTrackIdx: 0 },
             'green':  { startTrackIdx: 12, colorClass: 'c-green',  startR: 1, startC: 8,  starTrackIdx: 12 },
-            'yellow': { startTrackIdx: 24, colorClass: 'c-yellow', startR: 8, startC: 13, starTrackIdx: 24 },
-            'blue':   { startTrackIdx: 36, colorClass: 'c-blue',   startR: 13, startC: 6, starTrackIdx: 36 }
+            'yellow': { startTrackIdx: 26, colorClass: 'c-yellow', startR: 8, startC: 13, starTrackIdx: 26 }, 
+            'blue':   { startTrackIdx: 38, colorClass: 'c-blue',   startR: 13, startC: 6, starTrackIdx: 38 }  
         };
 
-        // Yol üstündeki bağımsız gri yıldızların harita indisleri
         const globalStarTrackIndices = [8, 21, 34, 47];
-
         const diceFaces = ["", "⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
+
+        function togglePopup(show) {
+            document.getElementById('ingame-popup-menu').style.display = show ? 'block' : 'none';
+        }
+        function handleNewGame() {
+            togglePopup(false);
+            initLudoGame();
+        }
+        function handleMainMenu() {
+            togglePopup(false);
+            document.getElementById('game-container').style.display = 'none';
+            document.getElementById('settings-menu').style.display = 'block';
+        }
 
         function managePlayerRow(num) {
             const isChecked = document.getElementById(`p${num}-active`).checked;
             document.getElementById(`p${num}-inputs`).style.display = isChecked ? 'flex' : 'none';
         }
 
-        // TAM OLARAK 1000191133_2.jpg GÖRSELİNDEKİ HARİTA ÇİZİMİ
         function renderLudoBoard() {
             const boardEl = document.getElementById('ludo-board');
             boardEl.innerHTML = "";
 
             for (let r = 0; r < 15; r++) {
                 for (let c = 0; c < 15; c++) {
-                    // Ev Blokları yerleşimi (Sol Üst: Kırmızı, Sağ Üst: Yeşil, Sol Alt: Mavi, Sağ Alt: Sarı)
                     if (r < 6 && c < 6) { if (r === 0 && c === 0) buildNestElement(boardEl, 'red', 'nest-red'); continue; }
                     if (r < 6 && c > 8) { if (r === 0 && c === 9) buildNestElement(boardEl, 'green', 'nest-green'); continue; }
                     if (r > 8 && c < 6) { if (r === 9 && c === 0) buildNestElement(boardEl, 'blue', 'nest-blue'); continue; }
@@ -340,19 +407,16 @@
                     cell.className = "cell c-white";
                     cell.id = `cell-${r}-${c}`;
 
-                    // Güvenli iç şerit yolları koordinatları (Görseldeki tam hizalama)
                     if (r === 7 && c >= 1 && c <= 5) cell.className = "cell c-red";
                     if (c === 7 && r >= 1 && r <= 5) cell.className = "cell c-green";
                     if (c === 7 && r >= 9 && r <= 13) cell.className = "cell c-blue";
                     if (r === 7 && c >= 9 && c <= 13) cell.className = "cell c-yellow";
 
-                    // Çıkış kareleri renklendirmesi
                     if (r === 6 && c === 1) cell.className = "cell c-red star-cell star-red";
                     if (r === 1 && c === 8) cell.className = "cell c-green star-cell star-green";
                     if (r === 8 && c === 13) cell.className = "cell c-yellow star-cell star-yellow";
                     if (r === 13 && c === 6) cell.className = "cell c-blue star-cell star-blue";
 
-                    // Yol üzerindeki ortak gri yıldız yerleşimleri (9. kare mantığı)
                     trackCoordinates.forEach((coord, index) => {
                         if (coord.r === r && coord.c === c && globalStarTrackIndices.includes(index)) {
                             cell.classList.add('star-cell');
@@ -401,19 +465,16 @@
 
             document.querySelectorAll('.player-profile-card').forEach(c => c.style.display = 'none');
 
-            // 1. Oyuncu (Kırmızı)
             let p1Name = document.getElementById('p1-name').value.trim() || "Player 1";
             let p1Shape = document.getElementById('p1-shape').value;
             players.push({ id: 1, name: p1Name, color: 'red', shape: p1Shape, isBot: document.getElementById('p1-bot').checked });
             setupProfileCard('red', p1Name, p1Shape);
 
-            // 2. Oyuncu (Yeşil)
             let p3Name = document.getElementById('p3-name').value.trim() || "Player 2";
             let p3Shape = document.getElementById('p3-shape').value;
             players.push({ id: 2, name: p3Name, color: 'green', shape: p3Shape, isBot: document.getElementById('p3-bot').checked });
             setupProfileCard('green', p3Name, p3Shape);
 
-            // 3. Oyuncu (Mavi)
             if (document.getElementById('p2-active').checked) {
                 let p2Name = document.getElementById('p2-name').value.trim() || "Player 3";
                 let p2Shape = document.getElementById('p2-shape').value;
@@ -421,7 +482,6 @@
                 setupProfileCard('blue', p2Name, p2Shape);
             }
 
-            // 4. Oyuncu (Sarı)
             if (document.getElementById('p4-active').checked) {
                 let p4Name = document.getElementById('p4-name').value.trim() || "Player 4";
                 let p4Shape = document.getElementById('p4-shape').value;
@@ -429,7 +489,6 @@
                 setupProfileCard('yellow', p4Name, p4Shape);
             }
 
-            // Piyonların dinamik olarak basılması
             players.forEach(p => {
                 p.pawns = [];
                 for (let i = 0; i < 4; i++) {
@@ -448,6 +507,8 @@
 
             activeTurnIndex = 0;
             consecutiveSixes = 0;
+            hasEatenThisTurn = false;
+            dicePool = [];
             rollDone = false;
             triggerTurnSetup();
         }
@@ -463,45 +524,100 @@
             let p = players[activeTurnIndex];
             let status = document.getElementById('status-bar');
             status.innerHTML = `Sıra: <span style="color:${p.color==='yellow'?'#f1c40f':(p.color==='blue'?'#3399ff':'#ff4d4d')}">${p.name}</span> takımında!`;
-            rollDone = false;
+            
+            updateDicePoolView();
 
             document.querySelectorAll('.player-profile-card').forEach(c => c.style.boxShadow = '0 4px 8px rgba(0,0,0,0.4)');
             document.getElementById(`profile-${p.color}`).style.boxShadow = '0 0 15px #fff';
 
-            if (p.isBot) {
+            if (dicePool.length > 0) {
+                // Eğer birikmiş zar varsa tekrar zar atmaya zorlama, piyon oynatmayı dene
+                rollDone = true;
                 document.getElementById('dice-btn').disabled = true;
-                setTimeout(() => { executeDiceRoll(); }, 1200);
+                highlightMoveablePawns();
             } else {
-                document.getElementById('dice-btn').disabled = false;
+                rollDone = false;
+                if (p.isBot) {
+                    document.getElementById('dice-btn').disabled = true;
+                    setTimeout(() => { executeDiceRoll(); }, 1000);
+                } else {
+                    document.getElementById('dice-btn').disabled = false;
+                }
             }
+        }
+
+        function updateDicePoolView() {
+            document.getElementById('dice-pool-view').innerText = `Kalan Hamleler: [${dicePool.join(', ')}]`;
         }
 
         function executeDiceRoll() {
             if (rollDone) return;
+            
+            let btn = document.getElementById('dice-btn');
+            let cube = document.getElementById('dice-cube');
+            btn.disabled = true;
+            cube.classList.add('dice-rolling');
             document.getElementById('sound-dice').play();
 
-            diceVal = Math.floor(Math.random() * 6) + 1;
-            document.getElementById('dice-cube').innerText = diceFaces[diceVal];
-            rollDone = true;
+            let interval = setInterval(() => {
+                cube.innerText = diceFaces[Math.floor(Math.random() * 6) + 1];
+            }, 50);
 
-            let p = players[activeTurnIndex];
+            setTimeout(() => {
+                clearInterval(interval);
+                cube.classList.remove('dice-rolling');
 
-            if (diceVal === 6) {
-                consecutiveSixes++;
-                if (consecutiveSixes === 3) {
-                    alert(`🚨 Üst üste 3 kez 6 attığın için elin yandı! Sıra diğer oyuncuda.`);
-                    consecutiveSixes = 0;
-                    setTimeout(switchTurn, 1200);
-                    return;
+                let rolled = Math.floor(Math.random() * 6) + 1;
+                cube.innerText = diceFaces[rolled];
+                dicePool.push(rolled);
+                updateDicePoolView();
+
+                let p = players[activeTurnIndex];
+
+                if (rolled === 6) {
+                    // Eğer bu el henüz taş yemediyse 6 sayacını kontrol et
+                    if (!hasEatenThisTurn) {
+                        consecutiveSixes++;
+                        if (consecutiveSixes === 3) {
+                            alert(`🚨 Taş yemeden üst üste 3 kez 6 attığın için elin yandı! Sıra diğer oyuncuda.`);
+                            consecutiveSixes = 0;
+                            dicePool = [];
+                            setTimeout(switchTurn, 1200);
+                            return;
+                        }
+                    }
+                    // 6 atıldığı için zarları biriktirmeye devam et, tekrar zar atma hakkı tanı
+                    rollDone = false;
+                    if (p.isBot) {
+                        setTimeout(executeDiceRoll, 1000);
+                    } else {
+                        btn.disabled = false;
+                    }
+                } else {
+                    // 6 dışı zar gelince artık zar atma biter, hamle yapma aşamasına geçilir
+                    rollDone = true;
+                    highlightMoveablePawns();
                 }
-            } else {
-                consecutiveSixes = 0;
+            }, 400); // 400ms dönme efekti süresi
+        }
+
+        function highlightMoveablePawns() {
+            let p = players[activeTurnIndex];
+            document.querySelectorAll('.pawn').forEach(el => el.classList.remove('movable'));
+
+            if (dicePool.length === 0) {
+                switchTurn();
+                return;
             }
 
-            let moveablePawns = getMoveablePawns(p, diceVal);
+            let currentDice = dicePool[0]; // Havuzdaki ilk zarı oynamaya odaklanıyoruz
+            let moveablePawns = getMoveablePawns(p, currentDice);
 
             if (moveablePawns.length === 0) {
-                setTimeout(switchTurn, 1200);
+                // Eğer havuzdaki ilk zarla hiçbir şey oynanamıyorsa o zarı yak ve sıradakine geç
+                dicePool.shift();
+                updateDicePoolView();
+                highlightMoveablePawns();
             } else {
                 if (p.isBot) {
                     setTimeout(() => { onPawnClicked(p, moveablePawns[0]); }, 1000);
@@ -529,37 +645,44 @@
         }
 
         function onPawnClicked(player, pawnId) {
-            if (!rollDone || players[activeTurnIndex].color !== player.color) return;
+            if (dicePool.length === 0 || players[activeTurnIndex].color !== player.color) return;
 
+            let currentDice = dicePool[0];
             let pawn = player.pawns[pawnId];
-            let moveableList = getMoveablePawns(player, diceVal);
+            let moveableList = getMoveablePawns(player, currentDice);
             if (!moveableList.includes(pawnId)) return;
 
-            moveableList.forEach(id => {
-                document.getElementById(`pawn-${player.color}-${id}`).classList.remove('movable');
-            });
+            // Görsel efektleri temizle
+            document.querySelectorAll('.pawn').forEach(el => el.classList.remove('movable'));
 
-            if (pawn.step === -1 && diceVal === 6) {
+            // Kullanılan zarı havuzdan çıkar
+            dicePool.shift();
+            updateDicePoolView();
+
+            if (pawn.step === -1 && currentDice === 6) {
                 pawn.step = 0; 
                 relocatePawnOnScreen(player.color, pawnId, 0);
                 document.getElementById('sound-home').play();
-                rollDone = false;
-                triggerTurnSetup();
+                
+                // Havuzda başka zar kalıp kalmadığını denetle
+                highlightMoveablePawns();
                 return;
             }
 
             if (pawn.step >= 0) {
-                pawn.step += diceVal;
+                pawn.step += currentDice;
                 relocatePawnOnScreen(player.color, pawnId, pawn.step);
-                
-                if (diceVal === 6) {
-                    rollDone = false;
-                    triggerTurnSetup();
-                } else {
-                    switchTurn();
-                }
+                highlightMoveablePawns();
             }
         }
+
+        // Korunan rakip yuva koordinatları listesi
+        const protectedEnemyStarts = [
+            {r:6, c:1},  // Kırmızı Çıkış
+            {r:1, c:8},  // Yeşil Çıkış
+            {r:8, c:13}, // Sarı Çıkış
+            {r:13, c:6}  // Mavi Çıkış
+        ];
 
         function relocatePawnOnScreen(color, pawnId, step) {
             let pawnEl = document.getElementById(`pawn-${color}-${pawnId}`);
@@ -576,7 +699,6 @@
 
             let targetCellEl;
 
-            // Güvenli iç bitiş kulvarı mantığı
             if (step > 50) {
                 let safeStep = step - 50; 
                 if (color === 'red')    targetCellEl = document.getElementById(`cell-7-${safeStep}`);
@@ -589,26 +711,34 @@
                 let coord = trackCoordinates[actualTrackIndex];
                 targetCellEl = document.getElementById(`cell-${coord.r}-${coord.c}`);
                 
-                // Güvenlik koruması kontrolleri (Kendi çıkışı mı yoksa haritadaki global yıldız kareleri mi?)
                 let isStartSpot = (coord.r === conf.startR && coord.c === conf.startC);
                 let isStarSpot = globalStarTrackIndices.includes(actualTrackIndex) || (actualTrackIndex === conf.starTrackIdx);
+
+                // Gelen koordinat bir RAKİBİN ana çıkış yuvası mı?
+                let isAnEnemyHomeCell = protectedEnemyStarts.some(p => p.r === coord.r && p.c === coord.c);
 
                 if (targetCellEl.children.length > 0) {
                     let existingPawns = Array.from(targetCellEl.children);
                     let samplePawn = existingPawns[0];
 
                     if (!samplePawn.id.includes(`pawn-${color}`)) {
-                        let isOpponentSafe = isStartSpot || isStarSpot || (existingPawns.length >= 2);
+                        // Eğer rakip yuvası hücresiyse, oradaki taşlar KORUMALIDIR (yenemez)
+                        let isOpponentSafe = isStartSpot || isStarSpot || isAnEnemyHomeCell || (existingPawns.length >= 2);
 
                         if (!isOpponentSafe) {
                             document.getElementById('sound-eat').play();
+                            
+                            // Taş yeme gerçekleştiği için kurallar güncellenir
+                            hasEatenThisTurn = true;
+                            consecutiveSixes = 0; // 6 sayacı sıfırlanır, artık sınırsız hakkı olur.
+
                             existingPawns.forEach(opPawn => {
                                 let opColor = opPawn.id.split('-')[1];
                                 let opPawnId = opPawn.id.split('-')[2];
                                 document.getElementById(`pocket-${opColor}-${opPawnId}`).appendChild(opPawn);
                                 players.find(p => p.color === opColor).pawns[opPawnId].step = -1;
                             });
-                            alert(`💥 Taşlama! ${color.toUpperCase()} takımı rakibi kırdı!`);
+                            alert(`💥 Muazzam Taşlama! ${color.toUpperCase()} takımı rakibi kırdı! 6'lar artık sınırsız!`);
                         }
                     }
                 }
@@ -643,7 +773,9 @@
         }
 
         function switchTurn() {
+            hasEatenThisTurn = false; // Yeni oyuncuya geçerken durum sıfırlanır
             activeTurnIndex = (activeTurnIndex + 1) % players.length;
+            dicePool = [];
             triggerTurnSetup();
         }
 
@@ -657,4 +789,4 @@
     </script>
 </body>
 </html>
-           
+       

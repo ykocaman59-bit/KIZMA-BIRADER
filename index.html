@@ -27,7 +27,7 @@
         #game-container { display: none; max-width: 450px; margin: 0 auto; }
         #status-bar { background: #2c3e50; padding: 10px; border-radius: 6px; margin-bottom: 8px; font-weight: bold; font-size: 14px; border: 1px solid #34495e; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); }
 
-        /* TAM ŞEMAYA UYGUN 15x15 LUDO TAHTASI */
+        /* HARİTA 15x15 LUDO TAHTASI */
         #ludo-board { 
             display: grid; 
             grid-template-columns: repeat(15, 1fr); 
@@ -41,49 +41,58 @@
             position: relative;
         }
 
-        /* Standart Hücre Yapısı */
+        /* Hücre Tasarımları */
         .cell { background: #ffffff; border: 1px solid #bdc3c7; display: flex; justify-content: center; align-items: center; position: relative; }
         
-        /* Renklendirmeler */
+        /* Renk Tanımlamaları */
         .c-red { background: #ff4d4d !important; }
         .c-blue { background: #3399ff !important; }
         .c-green { background: #2ecc71 !important; }
         .c-yellow { background: #f1c40f !important; }
         .c-white { background: #ffffff !important; }
 
-        /* Büyük Ev Kaleleri (6x6 Bloklar) */
-        .nest { grid-column: span 6; grid-row: span 6; display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 12px; padding: 14px; box-shadow: inset 0 0 10px rgba(0,0,0,0.2); }
+        /* Yıldız Karesi Tasarımı */
+        .star-cell::before {
+            content: "★";
+            font-size: 16px;
+            color: #7f8c8d;
+            position: absolute;
+            opacity: 0.6;
+            font-weight: bold;
+        }
+
+        /* Ev Kaleleri (6x6 Bloklar) */
+        .nest { grid-column: span 6; grid-row: span 6; display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 12px; padding: 14px; }
         .nest-red { background: #ff4d4d; }
         .nest-green { background: #2ecc71; }
         .nest-blue { background: #3399ff; }
         .nest-yellow { background: #f1c40f; }
         .pocket { background: #fff; border-radius: 50%; border: 2px solid #333; display: flex; justify-content: center; align-items: center; box-shadow: inset 0 2px 5px rgba(0,0,0,0.3); }
 
-        /* Orta Bitiş Üçgenleri (3x3 Blok) */
+        /* Merkez Üçgenler */
         .center-triangle-container { grid-column: span 3; grid-row: span 3; position: relative; background: #fff; border: 1px solid #bdc3c7; }
         .triangle-svg { width: 100%; height: 100%; position: absolute; top:0; left:0; }
 
-        /* Bitiş Yuvaları İçin Görsel Konteynerler */
         .home-target-zone { position: absolute; width: 30%; height: 30%; display: flex; justify-content: center; align-items: center; z-index: 5; }
         .target-red { left: 5%; top: 35%; }
         .target-green { left: 35%; top: 5%; }
         .target-yellow { right: 5%; top: 35%; }
         .target-blue { left: 35%; bottom: 5%; }
 
-        /* PİYON TASARIMI */
+        /* PİYONLAR VE ÜST ÜSTE BİNME DÜZENİ */
         .pawn {
             width: 75%;
             height: 75%;
             border-radius: 50%;
             border: 2px solid #fff;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.4), inset 0 -3px 5px rgba(0,0,0,0.3);
+            box-shadow: 0 3px 5px rgba(0,0,0,0.4), inset 0 -2px 4px rgba(0,0,0,0.3);
             cursor: pointer;
             z-index: 20;
-            transition: transform 0.2s ease, top 0.2s, left 0.2s;
-            position: relative;
+            position: absolute; /* Üst üste binme yığınlaması için absolute yapıldı */
+            transition: transform 0.15s ease;
         }
         .pawn::after { content: ''; display: block; width: 40%; height: 40%; background: rgba(255,255,255,0.4); border-radius: 50%; margin: 15% auto 0 auto; }
-        .pawn.movable { animation: bounce 0.4s infinite alternate; border: 2px solid #fff; box-shadow: 0 0 10px #fff; }
+        .pawn.movable { animation: bounce 0.4s infinite alternate; box-shadow: 0 0 10px #fff; z-index: 30; }
         
         .pawn-red { background: #c0392b; }
         .pawn-blue { background: #2980b9; }
@@ -92,7 +101,7 @@
 
         @keyframes bounce { from { transform: scale(1); } to { transform: scale(1.15); } }
 
-        /* ZAR VE KONTROL ALANI */
+        /* PANEL */
         #control-panel { display: flex; justify-content: space-between; align-items: center; background: #2c3e50; padding: 12px; border-radius: 8px; margin-top: 10px; border: 1px solid #34495e; }
         #dice-btn { background: #e67e22; color: white; border: none; padding: 10px 20px; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer; box-shadow: 0 3px 0 #d35400; width: 45%; }
         #dice-btn:disabled { background: #7f8c8d; box-shadow: none; cursor: not-allowed; }
@@ -163,7 +172,7 @@
         let rollDone = false;
         let consecutiveSixes = 0;
         
-        // Şemadaki Hücrelerin Orijinal İndis Koordinatları (Kızma Birader Pist Yolu)
+        // 52 Ortak Pist Kare Koordinatları
         const trackCoordinates = [
             {r:6, c:1}, {r:6, c:2}, {r:6, c:3}, {r:6, c:4}, {r:6, c:5},
             {r:5, c:6}, {r:4, c:6}, {r:3, c:6}, {r:2, c:6}, {r:1, c:6}, {r:0, c:6},
@@ -179,12 +188,12 @@
             {r:7, c:0}, {r:6, c:0}
         ];
 
-        // Takımların Özel Verileri (Kalkış Noktaları ve Güvenli Bitiş Şeritleri)
+        // Takım Özellikleri ve Koruma Noktaları (Çıkış Noktası ve Çıkıştan Sonraki 9. Kare İndisleri)
         const teamConfigs = {
-            'red':    { startTrackIdx: 0,  homeStartIndex: 51, colorClass: 'c-red',    startR: 6, startC: 1 },
-            'green':  { startTrackIdx: 12, homeStartIndex: 11, colorClass: 'c-green',  startR: 1, startC: 8 },
-            'yellow': { startTrackIdx: 24, homeStartIndex: 23, colorClass: 'c-yellow', startR: 8, startC: 13 },
-            'blue':   { startTrackIdx: 36, homeStartIndex: 35, colorClass: 'c-blue',   startR: 13, startC: 6 }
+            'red':    { startTrackIdx: 0,  colorClass: 'c-red',    startR: 6, startC: 1,  starTrackIdx: 9 },
+            'green':  { startTrackIdx: 12, colorClass: 'c-green',  startR: 1, startC: 8,  starTrackIdx: 21 },
+            'yellow': { startTrackIdx: 24, colorClass: 'c-yellow', startR: 8, startC: 13, starTrackIdx: 33 },
+            'blue':   { startTrackIdx: 36, colorClass: 'c-blue',   startR: 13, startC: 6, starTrackIdx: 45 }
         };
 
         const diceFaces = ["", "⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
@@ -194,58 +203,47 @@
             document.getElementById(`p${num}-inputs`).style.display = isChecked ? 'flex' : 'none';
         }
 
-        // TAM ŞEMAYA UYGUN HARİTA YAPILANDIRMASI
+        // HARİTA VE YILDIZLI KARELERİN BAĞLANMASI
         function renderLudoBoard() {
             const boardEl = document.getElementById('ludo-board');
             boardEl.innerHTML = "";
 
+            // Yıldızlı koordinat listesini çıkaralım
+            const starCoords = Object.values(teamConfigs).map(conf => trackCoordinates[conf.starTrackIdx]);
+
             for (let r = 0; r < 15; r++) {
                 for (let c = 0; c < 15; c++) {
-                    // Üst Sol Yuva (Yeşil Ev)
-                    if (r < 6 && c < 6) {
-                        if (r === 0 && c === 0) buildNestElement(boardEl, 'green', 'nest-green');
-                        continue;
-                    }
-                    // Üst Sağ Yuva (Sarı Ev)
-                    if (r < 6 && c > 8) {
-                        if (r === 0 && c === 9) buildNestElement(boardEl, 'yellow', 'nest-yellow');
-                        continue;
-                    }
-                    // Alt Sol Yuva (Kırmızı Ev)
-                    if (r > 8 && c < 6) {
-                        if (r === 9 && c === 0) buildNestElement(boardEl, 'red', 'nest-red');
-                        continue;
-                    }
-                    // Alt Sağ Yuva (Mavi Ev)
-                    if (r > 8 && c > 8) {
-                        if (r === 9 && c === 9) buildNestElement(boardEl, 'blue', 'nest-blue');
-                        continue;
-                    }
+                    if (r < 6 && c < 6) { if (r === 0 && c === 0) buildNestElement(boardEl, 'green', 'nest-green'); continue; }
+                    if (r < 6 && c > 8) { if (r === 0 && c === 9) buildNestElement(boardEl, 'yellow', 'nest-yellow'); continue; }
+                    if (r > 8 && c < 6) { if (r === 9 && c === 0) buildNestElement(boardEl, 'red', 'nest-red'); continue; }
+                    if (r > 8 && c > 8) { if (r === 9 && c === 9) buildNestElement(boardEl, 'blue', 'nest-blue'); continue; }
 
-                    // Merkez Bitiş Üçgenleri Alanı (3x3)
                     if (r >= 6 && r <= 8 && c >= 6 && c <= 8) {
-                        if (r === 6 && c === 6) {
-                            buildCenterTriangles(boardEl);
-                        }
+                        if (r === 6 && c === 6) buildCenterTriangles(boardEl);
                         continue;
                     }
 
-                    // Yol Hücreleri
                     let cell = document.createElement('div');
                     cell.className = "cell c-white";
                     cell.id = `cell-${r}-${c}`;
 
-                    // Şemadaki Renkli Hedef Yolları
-                    if (r === 7 && c >= 1 && c <= 6) cell.classList.add('c-red');
-                    if (c === 7 && r >= 1 && r <= 6) cell.classList.add('c-green');
-                    if (r === 7 && c >= 8 && c <= 13) cell.classList.add('c-yellow');
-                    if (c === 7 && r >= 8 && r <= 14) cell.classList.add('c-blue');
+                    // Renkli kulvar yolları
+                    if (r === 7 && c >= 1 && c <= 5) cell.className = "cell c-red";
+                    if (c === 7 && r >= 1 && r <= 5) cell.className = "cell c-green";
+                    if (r === 7 && c >= 9 && c <= 13) cell.className = "cell c-yellow";
+                    if (c === 7 && r >= 9 && r <= 13) cell.className = "cell c-blue";
 
-                    // Şemadaki Özel Kalkış Kareleri
-                    if (r === 6 && c === 1) cell.classList.add('c-red');
-                    if (r === 1 && c === 8) cell.classList.add('c-green');
-                    if (r === 8 && c === 13) cell.classList.add('c-yellow');
-                    if (r === 13 && c === 6) cell.classList.add('c-blue');
+                    // Başlangıç kareleri
+                    if (r === 6 && c === 1) cell.className = "cell c-red";
+                    if (r === 1 && c === 8) cell.className = "cell c-green";
+                    if (r === 8 && c === 13) cell.className = "cell c-yellow";
+                    if (r === 13 && c === 6) cell.className = "cell c-blue";
+
+                    // Çıkıştan sonraki 9. karelere Yıldız ekle
+                    let isStar = starCoords.some(coord => coord.r === r && coord.c === c);
+                    if (isStar) {
+                        cell.classList.add('star-cell');
+                    }
 
                     boardEl.appendChild(cell);
                 }
@@ -268,7 +266,6 @@
         function buildCenterTriangles(parent) {
             let container = document.createElement('div');
             container.className = "center-triangle-container";
-            
             container.innerHTML = `
                 <svg class="triangle-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
                     <polygon points="0,0 50,50 0,100" fill="#ff4d4d" stroke="#bdc3c7" stroke-width="0.5"/>
@@ -284,7 +281,6 @@
             parent.appendChild(container);
         }
 
-        // OYUN KURULUMU VE BAŞLATMA
         function initLudoGame() {
             renderLudoBoard();
             players = [];
@@ -300,22 +296,18 @@
                 players.push({ id: 3, name: p3Name, color: 'green', label: 'Yeşil', isBot: document.getElementById('p3-bot').checked });
             }
             if (document.getElementById('p4-active').checked) {
-                let p4Name = document.getElementById('p4-name').value.trim() || "palyer4";
+                let p4Name = document.getElementById('p4-name').value.trim() || "player4";
                 players.push({ id: 4, name: p4Name, color: 'yellow', label: 'Sarı', isBot: document.getElementById('p4-bot').checked });
             }
 
-            // Piyonları Oluştur ve Yuvalarına Koy
             players.forEach(p => {
                 p.pawns = [];
                 for (let i = 0; i < 4; i++) {
-                    let pawnData = { id: i, step: -1, isFinished: false };
-                    p.pawns.push(pawnData);
-                    
+                    p.pawns.push({ id: i, step: -1, isFinished: false });
                     let pawnEl = document.createElement('div');
                     pawnEl.className = `pawn pawn-${p.color}`;
                     pawnEl.id = `pawn-${p.color}-${i}`;
                     pawnEl.onclick = () => onPawnClicked(p, i);
-                    
                     document.getElementById(`pocket-${p.color}-${i}`).appendChild(pawnEl);
                 }
             });
@@ -343,7 +335,6 @@
             }
         }
 
-        // ZAR ATMA MEKANİZMASI
         function executeDiceRoll() {
             if (rollDone) return;
             document.getElementById('sound-dice').play();
@@ -354,11 +345,10 @@
 
             let p = players[activeTurnIndex];
 
-            // Üst Üste 3 Defa 6 Atma Cezası Kontrolü
             if (diceVal === 6) {
                 consecutiveSixes++;
                 if (consecutiveSixes === 3) {
-                    alert(`🚨 Üst üste 3 kez 6 attığın için cezalısın! Sıra diğer oyuncuya geçiyor.`);
+                    alert(`🚨 Üst üste 3 kez 6 attığın için elin yandı! Sıra diğer oyuncuda.`);
                     consecutiveSixes = 0;
                     setTimeout(switchTurn, 1200);
                     return;
@@ -367,18 +357,14 @@
                 consecutiveSixes = 0;
             }
 
-            // Oynatılabilecek Piyonları Hesapla
             let moveablePawns = getMoveablePawns(p, diceVal);
 
             if (moveablePawns.length === 0) {
-                // Hamle yoksa sıra geçer (Zar 6 değilse ve dışarıda taş yoksa)
                 setTimeout(switchTurn, 1200);
             } else {
                 if (p.isBot) {
-                    // Bot Yapay Zekası: Hamle yapabilen ilk piyonu otomatik seçer
                     setTimeout(() => { onPawnClicked(p, moveablePawns[0]); }, 1000);
                 } else {
-                    // İnsan Oyuncu İçin Taşları Parlat
                     moveablePawns.forEach(pawnId => {
                         document.getElementById(`pawn-${p.color}-${pawnId}`).classList.add('movable');
                     });
@@ -386,20 +372,14 @@
             }
         }
 
-        // HAREKET EDEBİLİR TAŞLARIN KONTROLÜ
         function getMoveablePawns(player, dice) {
             let list = [];
             player.pawns.forEach((pawn, idx) => {
                 if (pawn.isFinished) return;
-
-                // Evdeki piyon sadece 6 ile çıkabilir
                 if (pawn.step === -1 && dice === 6) {
                     list.push(idx);
-                } 
-                // Pistteki piyon ilerleyebilir mi?
-                else if (pawn.step >= 0) {
-                    let nextStep = pawn.step + dice;
-                    if (nextStep <= 56) { // 51 pist kare + 5 güvenli şerit karesi = maksimum 56
+                } else if (pawn.step >= 0) {
+                    if (pawn.step + dice <= 56) {
                         list.push(idx);
                     }
                 }
@@ -407,7 +387,6 @@
             return list;
         }
 
-        // PİYON HAREKET MANTIĞI VE KURAL SETLERİ
         function onPawnClicked(player, pawnId) {
             if (!rollDone || players[activeTurnIndex].color !== player.color) return;
 
@@ -415,31 +394,23 @@
             let moveableList = getMoveablePawns(player, diceVal);
             if (!moveableList.includes(pawnId)) return;
 
-            // Parlamayı kaldır
             moveableList.forEach(id => {
                 document.getElementById(`pawn-${player.color}-${id}`).classList.remove('movable');
             });
 
-            let pawnEl = document.getElementById(`pawn-${player.color}-${pawnId}`);
-
-            // KURAL 1: EVDEKİ TAŞI 6 İLE ÇIKARMA
             if (pawn.step === -1 && diceVal === 6) {
                 pawn.step = 0; 
                 relocatePawnOnScreen(player.color, pawnId, 0);
                 document.getElementById('sound-home').play();
-                
-                // 6 Atınca Yeniden Oynama Hakkı
                 rollDone = false;
                 triggerTurnSetup();
                 return;
             }
 
-            // KURAL 2: PİSTTE VE GÜVENLİ YOLDA İLERLEME
             if (pawn.step >= 0) {
                 pawn.step += diceVal;
                 relocatePawnOnScreen(player.color, pawnId, pawn.step);
                 
-                // 6 Atınca Yeniden Oynama Hakkı
                 if (diceVal === 6) {
                     rollDone = false;
                     triggerTurnSetup();
@@ -449,61 +420,94 @@
             }
         }
 
-        // GÖRSEL OLARAK PİYONLARI YERLEŞTİRME VE ÇARPIŞMA (KIRMA) MANTIĞI
+        // PİYONLARIN YERLEŞİMİ VE GELİŞMİŞ GÜVENLİK/BLOK KONTROLLERİ
         function relocatePawnOnScreen(color, pawnId, step) {
             let pawnEl = document.getElementById(`pawn-${color}-${pawnId}`);
             let conf = teamConfigs[color];
             
-            // 1. TAM SAYI İLE BİTİŞE ULAŞTI MI?
             if (step === 56) {
                 document.getElementById(`target-${color}`).appendChild(pawnEl);
                 players.find(p => p.color === color).pawns[pawnId].isFinished = true;
                 document.getElementById('sound-home').play();
                 checkVictoryCondition();
+                reorganizeCellStack(pawnEl.parentElement); // Ayrıldığı kareyi düzenle
                 return;
             }
 
             let targetCellEl;
 
-            // 2. GÜVENLİ HEDEF YOLUNDA MI?
+            // Güvenli İç Kulvar Şeridi
             if (step > 50) {
-                let safeStep = step - 50; // 1, 2, 3, 4, 5
+                let safeStep = step - 50; 
                 if (color === 'red')    targetCellEl = document.getElementById(`cell-7-${safeStep}`);
                 if (color === 'green')  targetCellEl = document.getElementById(`cell-${safeStep}-7`);
                 if (color === 'yellow') targetCellEl = document.getElementById(`cell-7-${14 - safeStep}`);
                 if (color === 'blue')   targetCellEl = document.getElementById(`cell-${14 - safeStep}-7`);
             } 
-            // 3. NORMAL ORTAK PİST YOLUNDA MI?
+            // Normal Ortak Yol
             else {
                 let actualTrackIndex = (conf.startTrackIdx + step) % 52;
                 let coord = trackCoordinates[actualTrackIndex];
                 targetCellEl = document.getElementById(`cell-${coord.r}-${coord.c}`);
                 
-                // GÜVENLİ ALAN KONTROLÜ: Yeni çıkan taş kalkış noktasındayken kıırılamaz
-                let isSafeSpot = (coord.r === conf.startR && coord.c === conf.startC);
+                // GÜVENLİK KONTROLLERİ
+                let isStartSpot = (coord.r === conf.startR && coord.c === conf.startC); // Kendi çıkış noktası mı?
+                let isStarSpot = (actualTrackIndex === conf.starTrackIdx); // Herhangi bir takımın 9. yıldız karesi mi?
 
-                // RAKİP TAŞLAMA (PİYON KIRMA) KONTROLÜ
-                if (targetCellEl.children.length > 0 && !isSafeSpot) {
-                    let opponentPawn = targetCellEl.children[0];
-                    if (!opponentPawn.id.includes(`pawn-${color}`)) {
-                        // Taş kırma gerçekleşti!
-                        document.getElementById('sound-eat').play();
-                        
-                        let opColor = opponentPawn.id.split('-')[1];
-                        let opPawnId = opponentPawn.id.split('-')[2];
-                        
-                        // Rakip piyonu evine (yuvasına) geri postala
-                        document.getElementById(`pocket-${opColor}-${opPawnId}`).appendChild(opponentPawn);
-                        
-                        let opPlayer = players.find(p => p.color === opColor);
-                        opPlayer.pawns[opPawnId].step = -1;
-                        alert(`💥 Taşlama! ${color.toUpperCase()} takımı, ${opColor.toUpperCase()} takımının piyonunu kırdı!`);
+                if (targetCellEl.children.length > 0) {
+                    let existingPawns = Array.from(targetCellEl.children);
+                    let samplePawn = existingPawns[0];
+
+                    // Kural A: Karede rakip piyonlar var mı?
+                    if (!samplePawn.id.includes(`pawn-${color}`)) {
+                        // Eğer rakip güvenli noktadaysa VEYA karede birden fazla piyonu varsa (BLOK yapıldıysa) KIRILAMAZ!
+                        let isOpponentSafe = isStartSpot || isStarSpot || (existingPawns.length >= 2);
+
+                        if (!isOpponentSafe) {
+                            // Güvende değillerse rakip piyonu (veya piyonları) evine geri yolla
+                            document.getElementById('sound-eat').play();
+                            existingPawns.forEach(opPawn => {
+                                let opColor = opPawn.id.split('-')[1];
+                                let opPawnId = opPawn.id.split('-')[2];
+                                document.getElementById(`pocket-${opColor}-${opPawnId}`).appendChild(opPawn);
+                                players.find(p => p.color === opColor).pawns[opPawnId].step = -1;
+                                opPawn.style.transform = "none"; // Boyutu sıfırla
+                            });
+                            alert(`💥 Taşlama! ${color.toUpperCase()} takımı kareyi ele geçirdi ve rakibi kırdı!`);
+                        }
                     }
                 }
             }
 
             if (targetCellEl) {
+                let oldParent = pawnEl.parentElement;
                 targetCellEl.appendChild(pawnEl);
+                
+                // Hem eski karedeki hem de yeni karedeki üst üste binen piyonları görsel olarak hizala
+                reorganizeCellStack(oldParent);
+                reorganizeCellStack(targetCellEl);
+            }
+        }
+
+        // ÜST ÜSTE BİNEN TAŞLARI GÖRSEL OLARAK KÜÇÜLTÜP YAN YANA / ÜST ÜSTE DİZEN FONKSİYON
+        function reorganizeCellStack(cellEl) {
+            if (!cellEl || cellEl.classList.contains('pocket') || cellEl.classList.contains('home-target-zone')) return;
+            
+            let pawns = cellEl.querySelectorAll('.pawn');
+            if (pawns.length === 0) return;
+
+            if (pawns.length === 1) {
+                pawns[0].style.transform = "none";
+                pawns[0].style.width = "75%";
+                pawns[0].style.height = "75%";
+            } else if (pawns.length >= 2) {
+                // Karede birden fazla piyon varsa, birbirlerini kapatmasınlar diye küçültüp yığıyoruz
+                pawns.forEach((pawn, idx) => {
+                    pawn.style.width = "55%";
+                    pawn.style.height = "55%";
+                    // Hafif kaydırma efekti ile üst üste durduklarını belli ediyoruz
+                    pawn.style.transform = `translate(${idx * 4}px, ${idx * 4}px)`;
+                });
             }
         }
 
@@ -514,9 +518,8 @@
 
         function checkVictoryCondition() {
             let activePlayer = players[activeTurnIndex];
-            let allFinished = activePlayer.pawns.every(p => p.isFinished);
-            if (allFinished) {
-                alert(`🏆 TEBRİKLER! ${activePlayer.name.toUpperCase()} tüm piyonları hedefe ulaştırarak oyunu KAZANDI!`);
+            if (activePlayer.pawns.every(p => p.isFinished)) {
+                alert(`🏆 TEBRİKLER! ${activePlayer.name.toUpperCase()} tüm piyonları hedefe ulaştırdı ve KAZANDI!`);
                 location.reload();
             }
         }

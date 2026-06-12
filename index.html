@@ -127,7 +127,7 @@
         .target-yellow { right: 5%; top: 35%; }
         .target-blue { left: 35%; bottom: 5%; }
 
-        /* PİYONLAR */
+        /* Piyonlar */
         .pawn {
             width: 80% !important;
             height: 80% !important;
@@ -188,7 +188,7 @@
         .nav-icon-btn { background: #34495e; border: none; color: white; font-size: 16px; padding: 8px 10px; border-radius: 4px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; }
         .nav-icon-btn:active { transform: translateY(1px); }
 
-        /* PARŞÖMEN AYARLAR POPUP (TEMİZLENDİ) */
+        /* PARŞÖMEN AYARLAR POPUP */
         #settings-popup-parchment {
             display: none;
             position: fixed;
@@ -352,7 +352,7 @@
         </div>
     </div>
 
-    <!-- AYARLAR PENCERESİ (DÜZENLENDİ) -->
+    <!-- AYARLAR PENCERESİ -->
     <div id="settings-popup-parchment">
         <h3>Ayarlar</h3>
         <label class="setting-item">
@@ -377,7 +377,7 @@
         <button class="wood-btn red-wood" onclick="handleMainMenu()">Sayfayı Yenile</button>
     </div>
 
-    <!-- SES DOSYALARI (GÜVENLİ VE DİNAMİK SES MOTORU İÇİN ADRESLER KORUNDU) -->
+    <!-- SES DOSYALARI -->
     <audio id="sound-dice" src="https://assets.mixkit.co/active_storage/sfx/2014/2014-84.wav" preload="auto"></audio>
     <audio id="sound-eat" src="https://assets.mixkit.co/active_storage/sfx/2511/2511-84.wav" preload="auto"></audio> 
     <audio id="sound-home" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-84.wav" preload="auto"></audio>
@@ -388,14 +388,13 @@
         let activeTurnIndex = 0;
         let dicePool = []; 
         let rollDone = false;
-        let consecutiveSixes = 0;
-        let hasEatenThisTurn = false; 
+        let consecutiveSixes = 0; 
         
-        // Geri Sayım Zamanlayıcı Değişkenleri
         let turnTimeLeft = 10;
         let turnTimerInterval = null;
         let isWaitingForPawnSelection = false;
 
+        // Küresel pist haritası (Kafaları karıştırmayacak net 52 karelik döngü pisti)
         const trackCoordinates = [
             {r:6, c:1}, {r:6, c:2}, {r:6, c:3}, {r:6, c:4}, {r:6, c:5},
             {r:5, c:6}, {r:4, c:6}, {r:3, c:6}, {r:2, c:6}, {r:1, c:6}, {r:0, c:6},
@@ -411,17 +410,18 @@
             {r:7, c:0}, {r:6, c:0}
         ];
 
+        // TAKIM BAŞLANGIÇ AYARLARI (Yıldızlı karelerin pist üzerindeki tam indeksleri)
+        // Red = 0 ({r:6, c:1}), Green = 12 ({r:0, c:8}), Yellow = 26 ({r:8, c:13}), Blue = 38 ({r:14, c:6})
         const teamConfigs = {
-            'red':    { startTrackIdx: 0,  colorClass: 'c-red',    startR: 6, startC: 1,  starTrackIdx: 0 },
-            'green':  { startTrackIdx: 12, colorClass: 'c-green',  startR: 1, startC: 8,  starTrackIdx: 12 },
-            'yellow': { startTrackIdx: 26, colorClass: 'c-yellow', startR: 8, startC: 13, starTrackIdx: 26 }, 
-            'blue':   { startTrackIdx: 38, colorClass: 'c-blue',   startR: 13, startC: 6, starTrackIdx: 38 }  
+            'red':    { startTrackIdx: 0,  colorClass: 'c-red',    startR: 6, startC: 1 },
+            'green':  { startTrackIdx: 12, colorClass: 'c-green',  startR: 0, startC: 8 },
+            'yellow': { startTrackIdx: 26, colorClass: 'c-yellow', startR: 8, startC: 13 }, 
+            'blue':   { startTrackIdx: 38, colorClass: 'c-blue',   startR: 14, startC: 6 }  
         };
 
-        const globalStarTrackIndices = [8, 21, 34, 47];
+        const globalStarTrackIndices = [0, 12, 26, 38, 8, 21, 34, 47];
         const diceFaces = ["", "⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
 
-        // Tarayıcı Ses Kilidini Açma ve Çalma Fonksiyonu
         function unlockAndPlayAudio(audioId) {
             let soundsAllowed = document.getElementById('chk-play-sounds').checked;
             if (!soundsAllowed) return;
@@ -431,9 +431,7 @@
                 audioEl.currentTime = 0;
                 let playPromise = audioEl.play();
                 if (playPromise !== undefined) {
-                    playPromise.catch(error => {
-                        console.log("Ses çalma tarayıcı tarafından engellendi, etkileşim bekleniyor.");
-                    });
+                    playPromise.catch(() => {});
                 }
             }
         }
@@ -456,10 +454,8 @@
 
         function handleTimeOutAction() {
             if (!isWaitingForPawnSelection) {
-                // Zaman bitti ve zar atılmadıysa otomatik at
                 executeDiceRoll();
             } else {
-                // Zar atıldı ama piyon seçilmediyse otomatik hamle yap
                 autoPlayRandomPawn();
             }
         }
@@ -495,7 +491,6 @@
         function renderLudoBoard() {
             const boardEl = document.getElementById('ludo-board');
             boardEl.innerHTML = "";
-            boardEl.style.border = '6px solid #2c3e50';
 
             for (let r = 0; r < 15; r++) {
                 for (let c = 0; c < 15; c++) {
@@ -519,13 +514,15 @@
                     if (r === 7 && c >= 9 && c <= 13) cell.className = "cell c-yellow";
 
                     if (r === 6 && c === 1) cell.className = "cell c-red star-cell star-red";
-                    if (r === 1 && c === 8) cell.className = "cell c-green star-cell star-green";
+                    if (r === 0 && c === 8) cell.className = "cell c-green star-cell star-green";
                     if (r === 8 && c === 13) cell.className = "cell c-yellow star-cell star-yellow";
-                    if (r === 13 && c === 6) cell.className = "cell c-blue star-cell star-blue";
+                    if (r === 14 && c === 6) cell.className = "cell c-blue star-cell star-blue";
 
                     trackCoordinates.forEach((coord, index) => {
                         if (coord.r === r && coord.c === c && globalStarTrackIndices.includes(index)) {
-                            cell.classList.add('star-cell');
+                            if (!cell.classList.contains('star-cell')) {
+                                cell.classList.add('star-cell');
+                            }
                         }
                     });
 
@@ -566,7 +563,6 @@
         }
 
         function initLudoGame() {
-            // Seslerin çalabilmesi için ses motoru elementlerini bir kez tetikliyoruz
             ['sound-dice', 'sound-eat', 'sound-home', 'sound-victory'].forEach(id => {
                 let a = document.getElementById(id);
                 if(a) { a.play().then(() => a.pause()).catch(() => {}); }
@@ -619,7 +615,6 @@
 
             activeTurnIndex = 0;
             consecutiveSixes = 0;
-            hasEatenThisTurn = false;
             dicePool = [];
             rollDone = false;
             isWaitingForPawnSelection = false;
@@ -655,7 +650,7 @@
                     setTimeout(() => { executeDiceRoll(); }, 1000);
                 } else {
                     document.getElementById('dice-btn').disabled = false;
-                    startCountdown(10); // Oyuncunun zar atması için 10 saniye başlar
+                    startCountdown(10);
                 }
             }
         }
@@ -666,7 +661,7 @@
 
         function executeDiceRoll() {
             if (rollDone) return;
-            clearInterval(turnTimerInterval); // Zar atıldığı an eski sayacı durdur
+            clearInterval(turnTimerInterval);
             
             let btn = document.getElementById('dice-btn');
             let cube = document.getElementById('dice-cube');
@@ -688,22 +683,20 @@
                 updateDicePoolView();
 
                 if (rolled === 6) {
-                    if (!hasEatenThisTurn) {
-                        consecutiveSixes++;
-                        if (consecutiveSixes === 3) {
-                            alert(`🚨 Taş yemeden üst üste 3 kez 6 attığın için elin yandı! Sıra diğer oyuncuda.`);
-                            consecutiveSixes = 0;
-                            dicePool = [];
-                            setTimeout(switchTurn, 1200);
-                            return;
-                        }
+                    consecutiveSixes++;
+                    // Kural: Üst üste 3 kez 6 gelirse hiçbir uyarı yazısı vermeden sıra anında diğerine geçer!
+                    if (consecutiveSixes === 3) {
+                        consecutiveSixes = 0;
+                        dicePool = [];
+                        setTimeout(switchTurn, 800);
+                        return;
                     }
                     rollDone = false;
                     if (players[activeTurnIndex].isBot) {
                         setTimeout(executeDiceRoll, 1000);
                     } else {
                         btn.disabled = false;
-                        startCountdown(10); // 6 attıysa tekrar zar atmak için 10 saniye yenilenir
+                        startCountdown(10);
                     }
                 } else {
                     rollDone = true;
@@ -733,31 +726,25 @@
 
             isWaitingForPawnSelection = true;
 
-            // --- İSTEDİĞİN ÖZEL SİSTEM SİMÜLASYONU VE OTOMATİK OYNATMA KURALLARI ---
             if (!p.isBot) {
-                // Dışarıdaki (aktif yoldaki) taş sayısını bulalım
                 let outsidePawns = p.pawns.filter(pwn => pwn.step >= 0 && !pwn.isFinished);
                 
-                // Kural: 1 taş dışarıdaysa ve yuvadan yeni taş çıkarılamıyorsa (yani zar 6 değilse veya yuvada taş yoksa)
-                // Direkt o tek taşı otomatik oynat, kullanıcıyı bekletme!
-                if (outsidePawns.length === 1 && moveablePawns.length === 1) {
+                // Sadece 1 geçerli taş varsa ve yuvadan yeni çıkış yoksa otomatik oynat
+                if (outsidePawns.length === 1 && moveablePawns.length === 1 && currentDice !== 6) {
                     setTimeout(() => { onPawnClicked(p, moveablePawns[0]); }, 500);
                     return;
                 }
 
-                // Eğer birden fazla taş hamle yapabiliyorsa piyonları parlat ve 10 saniyeyi yeniden başlat!
                 moveablePawns.forEach(pawnId => {
                     document.getElementById(`pawn-${p.color}-${pawnId}`).classList.add('movable');
                 });
                 
-                startCountdown(10); // Zar atıldıktan sonra piyon seçimi için 10 saniye temizden başlar
+                startCountdown(10); 
             } else {
-                // Bot ise direkt ilk geçerli taşı oynasın
                 setTimeout(() => { onPawnClicked(p, moveablePawns[0]); }, 1000);
             }
         }
 
-        // Zaman bittiğinde dışarıdaki taşlardan birini rastgele oynatma fonksiyonu
         function autoPlayRandomPawn() {
             let p = players[activeTurnIndex];
             if (dicePool.length === 0) return;
@@ -798,14 +785,19 @@
             let moveableList = getMoveablePawns(player, currentDice);
             if (!moveableList.includes(pawnId)) return;
 
-            clearInterval(turnTimerInterval); // Hamle yapıldığı an sayacı sustur
+            clearInterval(turnTimerInterval); 
             document.querySelectorAll('.pawn').forEach(el => el.classList.remove('movable'));
+
+            // Eğer zar 6 değilse ve normal bir hamle yapıldıysa üst üste 6 sayacını sıfırla
+            if (currentDice !== 6) {
+                consecutiveSixes = 0;
+            }
 
             dicePool.shift();
             updateDicePoolView();
 
             if (pawn.step === -1 && currentDice === 6) {
-                pawn.step = 0; 
+                pawn.step = 0; // Doğrudan başlangıç hücresine (0. adım)
                 relocatePawnOnScreen(player.color, pawnId, 0);
                 unlockAndPlayAudio('sound-home');
                 highlightMoveablePawns();
@@ -818,13 +810,6 @@
                 highlightMoveablePawns();
             }
         }
-
-        const protectedEnemyStarts = [
-            {r:6, c:1},  
-            {r:1, c:8},  
-            {r:8, c:13}, 
-            {r:13, c:6}  
-        ];
 
         function relocatePawnOnScreen(color, pawnId, step) {
             let pawnEl = document.getElementById(`pawn-${color}-${pawnId}`);
@@ -849,33 +834,30 @@
                 if (color === 'yellow') targetCellEl = document.getElementById(`cell-7-${14 - safeStep}`);
             } 
             else {
+                // HATA DÜZELTME: Modulo aritmetiği ile tam renkli/yıldızlı hücreden başlatma
                 let actualTrackIndex = (conf.startTrackIdx + step) % 52;
                 let coord = trackCoordinates[actualTrackIndex];
                 targetCellEl = document.getElementById(`cell-${coord.r}-${coord.c}`);
                 
                 let isStartSpot = (coord.r === conf.startR && coord.c === conf.startC);
-                let isStarSpot = globalStarTrackIndices.includes(actualTrackIndex) || (actualTrackIndex === conf.starTrackIdx);
-                let isAnEnemyHomeCell = protectedEnemyStarts.some(p => p.r === coord.r && p.c === coord.c);
+                let isStarSpot = globalStarTrackIndices.includes(actualTrackIndex);
 
                 if (targetCellEl && targetCellEl.children.length > 0) {
                     let existingPawns = Array.from(targetCellEl.children);
                     let samplePawn = existingPawns[0];
 
                     if (!samplePawn.id.includes(`pawn-${color}`)) {
-                        let isOpponentSafe = isStartSpot || isStarSpot || isAnEnemyHomeCell || (existingPawns.length >= 2);
+                        let isOpponentSafe = isStartSpot || isStarSpot || (existingPawns.length >= 2);
 
                         if (!isOpponentSafe) {
                             unlockAndPlayAudio('sound-eat');
-                            hasEatenThisTurn = true;
-                            consecutiveSixes = 0; 
-
+                            
                             existingPawns.forEach(opPawn => {
                                 let opColor = opPawn.id.split('-')[1];
                                 let opPawnId = opPawn.id.split('-')[2];
                                 document.getElementById(`pocket-${opColor}-${opPawnId}`).appendChild(opPawn);
                                 players.find(p => p.color === opColor).pawns[opPawnId].step = -1;
                             });
-                            alert(`💥 Muazzam Taşlama! ${color.toUpperCase()} takımı rakibi kırdı! 6'lar artık sınırsız!`);
                         }
                     }
                 }
@@ -917,7 +899,6 @@
 
         function switchTurn() {
             clearInterval(turnTimerInterval);
-            hasEatenThisTurn = false; 
             activeTurnIndex = (activeTurnIndex + 1) % players.length;
             dicePool = [];
             triggerTurnSetup();
@@ -934,3 +915,4 @@
     </script>
 </body>
 </html>
+      

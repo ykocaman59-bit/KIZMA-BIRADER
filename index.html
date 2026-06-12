@@ -197,6 +197,7 @@
 
     <h1>Kızma Birader PRO</h1>
 
+    <!-- AYARLAR EKRANI -->
     <div id="settings-menu">
         <h3 class="menu-title">⚙️ Oyuncu & Taş Ayarları</h3>
         
@@ -251,6 +252,7 @@
         <button class="btn-start" onclick="initLudoGame()">Oyunu Başlat 🚀</button>
     </div>
 
+    <!-- OYUN ALANI -->
     <div id="game-container">
         <div id="status-bar">
             <span id="turn-text">Sıra Kimde?</span>
@@ -258,6 +260,7 @@
         </div>
         
         <div class="board-wrapper">
+            <!-- Profil Kartları -->
             <div class="player-profile-card card-red" id="profile-red" style="display:none;">
                 <div class="profile-avatar">👤</div>
                 <div class="profile-info"><span id="lbl-red-name">-</span><span class="profile-pawn-preview" id="lbl-red-shape">-</span></div>
@@ -298,6 +301,7 @@
         </div>
     </div>
 
+    <!-- AYARLAR PENCERESİ -->
     <div id="settings-popup-parchment">
         <h3>Ayarlar</h3>
         <label class="setting-item">
@@ -309,6 +313,7 @@
         <button class="parchment-close-btn" onclick="toggleParchmentPopup(false)">Tamam</button>
     </div>
 
+    <!-- ANA MENÜ POPUP KUTUSU -->
     <div id="mainmenu-popup-box">
         <div class="menu-popup-title">Ana Menü</div>
         <button class="wood-btn" onclick="toggleMainMenuPopup(false)">Oyuna Dön</button>
@@ -326,33 +331,30 @@
         let turnTimerInterval = null;
         let isWaitingForPawnSelection = false;
 
-        // GÖRSELDEKİ SAAT YÖNÜNDEKİ 52 KARELİK PİST DİZİLİMİ
         const trackCoordinates = [
-            {r:6, c:0},  {r:6, c:1},  {r:6, c:2},  {r:6, c:3},  {r:6, c:4},  {r:6, c:5},  // Sol kol üst (0-5)
-            {r:5, c:6},  {r:4, c:6},  {r:3, c:6},  {r:2, c:6},  {r:1, c:6},  {r:0, c:6},  // Üst sütun sol (6-11)
-            {r:0, c:7},                                                                     // En üst orta geçiş (12)
-            {r:0, c:8},  {r:1, c:8},  {r:2, c:8},  {r:3, c:8},  {r:4, c:8},  {r:5, c:8},  // Üst sütun sağ (13-18)
-            {r:6, c:9},  {r:6, c:10}, {r:6, c:11}, {r:6, c:12}, {r:6, c:13}, {r:6, c:14}, // Sağ kol üst (19-24)
-            {r:7, c:14},                                                                    // En sağ orta geçiş (25)
-            {r:8, c:14}, {r:8, c:13}, {r:8, c:12}, {r:8, c:11}, {r:8, c:10}, {r:8, c:9},  // Sağ kol alt (26-31)
-            {r:9, c:8},  {r:10, c:8}, {r:11, c:8}, {r:12, c:8}, {r:13, c:8}, {r:14, c:8}, // Alt sütun sağ (32-37)
-            {r:14, c:7},                                                                    // En alt orta geçiş (38)
-            {r:14, c:6}, {r:13, c:6}, {r:12, c:6}, {r:11, c:6}, {r:10, c:6}, {r:9, c:6},  // Alt sütun sol (39-44)
-            {r:8, c:5},  {r:8, c:4},  {r:8, c:3},  {r:8, c:2},  {r:8, c:1},  {r:8, c:0},  // Sol kol alt (45-50)
-            {r:7, c:0}                                                                      // En sol orta geçiş (51)
+            {r:6, c:0},  {r:6, c:1},  {r:6, c:2},  {r:6, c:3},  {r:6, c:4},  {r:6, c:5},  
+            {r:5, c:6},  {r:4, c:6},  {r:3, c:6},  {r:2, c:6},  {r:1, c:6},  {r:0, c:6},  
+            {r:0, c:7},                                                                     
+            {r:0, c:8},  {r:1, c:8},  {r:2, c:8},  {r:3, c:8},  {r:4, c:8},  {r:5, c:8},  
+            {r:6, c:9},  {r:6, c:10}, {r:6, c:11}, {r:6, c:12}, {r:6, c:13}, {r:6, c:14}, 
+            {r:7, c:14},                                                                    
+            {r:8, c:14}, {r:8, c:13}, {r:8, c:12}, {r:8, c:11}, {r:8, c:10}, {r:8, c:9},  
+            {r:9, c:8},  {r:10, c:8}, {r:11, c:8}, {r:12, c:8}, {r:13, c:8}, {r:14, c:8}, 
+            {r:14, c:7},                                                                    
+            {r:14, c:6}, {r:13, c:6}, {r:12, c:6}, {r:11, c:6}, {r:10, c:6}, {r:9, c:6},  
+            {r:8, c:5},  {r:8, c:4},  {r:8, c:3},  {r:8, c:2},  {r:8, c:1},  {r:8, c:0},  
+            {r:7, c:0}                                                                      
         ];
 
-        // %100 GERÇEK ÇIKMA NOKTALARI: EVDEN ÇIKINCA DİREKT RENKLİ YILDIZIN ÜSTÜNE GELİR
         const teamConfigs = {
-            'red':    { startTrackIdx: 1,  colorClass: 'c-red',    startR: 6, startC: 1 },  // Kırmızı Yıldızlı Kare (1. İndeks)
-            'green':  { startTrackIdx: 14, colorClass: 'c-green',  startR: 1, startC: 8 },  // Yeşil Yıldızlı Kare (14. İndeks)
-            'yellow': { startTrackIdx: 27, colorClass: 'c-yellow', startR: 8, startC: 13 }, // Sarı Yıldızlı Kare (27. İndeks)
-            'blue':   { startTrackIdx: 40, colorClass: 'c-blue',   startR: 13, startC: 6 }  // Mavi Yıldızlı Kare (40. İndeks)
+            'red':    { startTrackIdx: 1,  colorClass: 'c-red',    startR: 6, startC: 1 },  
+            'green':  { startTrackIdx: 14, colorClass: 'c-green',  startR: 1, startC: 8 },  
+            'yellow': { startTrackIdx: 27, colorClass: 'c-yellow', startR: 8, startC: 13 }, 
+            'blue':   { startTrackIdx: 40, colorClass: 'c-blue',   startR: 13, startC: 6 }  
         };
 
         const diceFaces = ["", "⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
 
-        // SES MOTORU - TARAYICI ENGELLERİNDEN ARINDIRILMIŞ SYNTHESIZER
         function initAudioContext() {
             if (!audioCtx) {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -412,10 +414,10 @@
             }
         }
 
-        // Tıklama ile sesleri tarayıcıda serbest bırakıyoruz
         document.addEventListener('click', initAudioContext);
         document.addEventListener('touchstart', initAudioContext);
 
+        // KRONOMETRE MOTORU - 10 SANİYE BİTİNCE OTOMATİK ADIMLARI YÖNETİR
         function startCountdown(seconds) {
             clearInterval(turnTimerInterval);
             turnTimeLeft = seconds;
@@ -426,7 +428,15 @@
                 document.getElementById('turn-timer').innerText = `${turnTimeLeft}s`;
                 if (turnTimeLeft <= 0) {
                     clearInterval(turnTimerInterval);
-                    autoPlayRandomPawn();
+                    
+                    // SÜRE BİTTİĞİNDE YAPILACAKLAR
+                    if (!rollDone) {
+                        // Eğer oyuncu zar atmadıysa, otomatik olarak zarı salla!
+                        executeDiceRoll();
+                    } else {
+                        // Eğer zar atılmış ama taş seçilmemişse, otomatik bir taş oynat
+                        autoPlayRandomPawn();
+                    }
                 }
             }, 1000);
         }
@@ -457,19 +467,16 @@
                     cell.className = "cell c-white";
                     cell.id = `cell-${r}-${c}`;
 
-                    // GÜVENLİ BİTİŞ YOLLARI (EV ÖNLERİ)
                     if (r === 7 && c >= 1 && c <= 5) cell.className = "cell c-red";
                     if (c === 7 && r >= 1 && r <= 5) cell.className = "cell c-green";
                     if (c === 7 && r >= 9 && r <= 13) cell.className = "cell c-blue";
                     if (r === 7 && c >= 9 && c <= 13) cell.className = "cell c-yellow";
 
-                    // GÖRSELDEKİ BİREBİR RENKLİ YILDIZLI ÇIKIŞ KARELERİ
                     if (r === 6 && c === 1) cell.className = "cell c-red star-cell star-red";
                     if (r === 1 && c === 8) cell.className = "cell c-green star-cell star-green";
                     if (r === 8 && c === 13) cell.className = "cell c-yellow star-cell star-yellow";
                     if (r === 13 && c === 6) cell.className = "cell c-blue star-cell star-blue";
 
-                    // Diğer gri renkli güvenli yıldız kareleri
                     if ((r === 2 && c === 6) || (r === 6 && c === 12) || (r === 12 && c === 8) || (r === 8 && c === 2)) {
                         cell.classList.add('star-cell');
                     }
@@ -585,7 +592,7 @@
                     setTimeout(executeDiceRoll, 1000);
                 } else {
                     document.getElementById('dice-btn').disabled = false;
-                    startCountdown(10);
+                    startCountdown(10); // Gerçek oyuncunun zar atması için 10 saniye sayacı başlatıldı
                 }
             }
         }
@@ -595,9 +602,8 @@
         }
 
         function executeDiceRoll() {
-            if (rollDone) return;
             clearInterval(turnTimerInterval);
-            initAudioContext(); // Her tıklandığında ses bağlamını canlandırır
+            initAudioContext(); 
             
             let btn = document.getElementById('dice-btn');
             let cube = document.getElementById('dice-cube');
@@ -632,7 +638,7 @@
                         setTimeout(executeDiceRoll, 1000);
                     } else {
                         btn.disabled = false;
-                        startCountdown(10);
+                        startCountdown(10); // 6 atınca tekrar zar atma hakkı için 10 saniye verilir
                     }
                 } else {
                     rollDone = true;
@@ -662,17 +668,19 @@
 
             isWaitingForPawnSelection = true;
 
-            if (!p.isBot) {
-                let outsidePawns = p.pawns.filter(pwn => pwn.step >= 0 && !pwn.isFinished);
-                if (outsidePawns.length === 1 && moveablePawns.length === 1 && currentDice !== 6) {
-                    setTimeout(() => { onPawnClicked(p, moveablePawns[0]); }, 500);
-                    return;
-                }
+            // DIŞARIDA TEK TAŞ VARSA VE ZAR 6 DEĞİLSE - BEKLEMEDEN DİREKT OYNATMA KURALI
+            let outsidePawns = p.pawns.filter(pwn => pwn.step >= 0 && !pwn.isFinished);
+            if (outsidePawns.length === 1 && moveablePawns.length === 1 && currentDice !== 6) {
+                // Zaman kaybetmeden tık diye taşı oynatıyoruz
+                onPawnClicked(p, moveablePawns[0]);
+                return;
+            }
 
+            if (!p.isBot) {
                 moveablePawns.forEach(pawnId => {
                     document.getElementById(`pawn-${p.color}-${pawnId}`).classList.add('movable');
                 });
-                startCountdown(10); 
+                startCountdown(10); // Taş seçimi yapması için 10 saniyelik yeni süre başlatıldı
             } else {
                 setTimeout(() => { onPawnClicked(p, moveablePawns[0]); }, 1000);
             }
@@ -726,7 +734,6 @@
             updateDicePoolView();
             playSynthSound('move');
 
-            // İLK ÇIKIŞ: 6 ATINCA DOĞRUDAN KENDİ YILDIZLI KARELERİNE ADIM 0 OLARAK BAŞLARLAR
             if (pawn.step === -1 && currentDice === 6) {
                 pawn.step = 0; 
                 relocatePawnOnScreen(player.color, pawnId, 0);
@@ -757,7 +764,6 @@
 
             let targetCellEl;
 
-            // Ev önündeki 5 adımlık renkli bitiş yolları
             if (step > 45) {
                 let safeStep = step - 45; 
                 if (color === 'red')    targetCellEl = document.getElementById(`cell-7-${safeStep}`);
@@ -776,7 +782,6 @@
                 if (targetCellEl && targetCellEl.children.length > 0) {
                     let existingPawns = Array.from(targetCellEl.children);
                     if (!existingPawns[0].id.includes(`pawn-${color}`)) {
-                        // Kendi yıldızlı başlangıç karesinde veya güvenli yıldızda olan taşlar yenemez
                         let isOpponentSafe = isStartSpot || isStarSpot;
 
                         if (!isOpponentSafe) {
